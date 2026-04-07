@@ -8,14 +8,14 @@ export function Hero() {
     <section className="min-h-[85vh] flex items-center px-6 md:px-12 max-w-6xl mx-auto text-left relative overflow-hidden">
       {/* Background Decorative Gradient */}
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_10%_20%,rgba(59,130,246,0.03)_0%,transparent_50%)] z-0 pointer-events-none" />
-      
+
       <div className="max-w-3xl relative z-10 py-12">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-xs font-bold text-blue-600 tracking-[0.2em] mb-4 uppercase"
         >
-          Prosper Nation Technology
+          Vergeo5 Technology
         </motion.p>
 
         <motion.h1
@@ -34,8 +34,8 @@ export function Hero() {
           transition={{ delay: 0.2 }}
           className="text-lg text-gray-500 mb-8 max-w-xl leading-relaxed font-medium"
         >
-          Full-stack development specializing in high-performance e-commerce, 
-          business systems, and N8N workflow automations. Based in Zambia, 
+          Full-stack development specializing in high-performance e-commerce,
+          business systems, and N8N workflow automations. Based in Zambia,
           engineering for the world.
         </motion.p>
 

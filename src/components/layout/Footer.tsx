@@ -10,38 +10,31 @@ export function Footer() {
       <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-10 mb-12">
         <div className="md:col-span-2">
           <Link href="/" className="flex items-center gap-2 mb-6">
-            <Image 
-              src="/logo.png" 
-              alt="Prosper Nation Logo" 
-              width={24} 
-              height={24} 
+            <Image
+              src="/logo.png"
+              alt="Vergeo Group Logo"
+              width={204}
+              height={24}
               className="rounded-sm"
             />
-            <span className="font-bold text-gray-900 text-lg">
-              ProsperNation<span className="text-blue-600">.</span>
-            </span>
+
           </Link>
           <p className="text-gray-500 max-w-sm leading-relaxed mb-6 text-sm">
-            Full-stack developer and automation builder based in Zambia. 
+            Full-stack developer and automation builder based in Zambia.
             Helping businesses ship fast, scalable products globally.
           </p>
           <div className="flex gap-4">
             <a href="https://github.com/KaluMuso" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-110">
-               <Image src="/icons/github.png" alt="GitHub" width={20} height={20} className="opacity-70 hover:opacity-100" onError={(e) => (e.currentTarget.style.display = 'none')} />
-               <span className="sr-only">GitHub</span>
-            </a>
-            <a href="https://x.com/king5gates" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-110">
-               <Image src="/icons/twitter.png" alt="Twitter" width={20} height={20} className="opacity-70 hover:opacity-100" onError={(e) => (e.currentTarget.style.display = 'none')} />
-               <span className="sr-only">Twitter</span>
+              <Image src="/icons/github.png" alt="GitHub" width={60} height={20} />
             </a>
             <a href="https://www.linkedin.com/in/kaluba-prosper-musonda/" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-110">
-               <Image src="/icons/linkedin.png" alt="LinkedIn" width={20} height={20} />
+              <Image src="/icons/linkedin.png" alt="LinkedIn" width={60} height={20} />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-110">
-               <Image src="/icons/facebook.webp" alt="Facebook" width={20} height={20} />
+            <a href="https://web.facebook.com/profile.php?id=61551917600176" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-110">
+              <Image src="/icons/facebook.webp" alt="Facebook" width={60} height={20} />
             </a>
-            <a href="https://wa.me/yourphone" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-110">
-               <Image src="/icons/whatsapp.png" alt="WhatsApp" width={20} height={20} />
+            <a href="https://wa.me/260761359005?text=Hey%20Kaluba%2C%20I%20saw%20your%20profile%20on%20your%20website%20and%20would%20like%20to%20find%20out%20more%20about%20the%20services%20you%20provide" target="_blank" rel="noopener noreferrer" className="transition-transform hover:scale-110">
+              <Image src="/icons/whatsapp.png" alt="WhatsApp" width={60} height={20} />
             </a>
           </div>
         </div>

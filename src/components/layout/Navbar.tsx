@@ -20,15 +20,15 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
       <div className="max-w-6xl mx-auto px-6 md:px-12 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Image 
-            src="/logo.png" 
-            alt="Prosper Nation Logo" 
-            width={32} 
-            height={32} 
+          <Image
+            src="/verge.png"
+            alt="Vergeo Group"
+            width={140}
+            height={102}
             className="rounded-sm"
           />
           <span className="font-bold text-gray-900 text-lg tracking-tight">
-            ProsperNation<span className="text-blue-600">.</span>
+            <span className="text-blue-600"> Group.</span>
           </span>
         </Link>
 
@@ -38,11 +38,10 @@ export function Navbar() {
             <Link
               key={href}
               href={href}
-              className={`text-sm font-semibold transition-all duration-200 ${
-                pathname === href 
-                  ? "text-blue-600 underline underline-offset-4" 
-                  : "text-gray-500 hover:text-gray-900"
-              }`}
+              className={`text-sm font-semibold transition-all duration-200 ${pathname === href
+                ? "text-blue-600 underline underline-offset-4"
+                : "text-gray-500 hover:text-gray-900"
+                }`}
             >
               {label}
             </Link>

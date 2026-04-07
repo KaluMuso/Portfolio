@@ -2,7 +2,7 @@ import { projects } from "@/data/projects";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 
 export const metadata = {
-  title: "Projects | Your Name",
+  title: "Projects | Vergeo Group",
   description: "Explore a showcase of featured works, including e-commerce stores and custom business automation solutions.",
 };
 
@@ -12,7 +12,7 @@ export default function ProjectsPage() {
       <div className="mb-16">
         <h1 className="text-4xl font-bold text-gray-900 mb-6">All Projects</h1>
         <p className="text-gray-600 text-lg max-w-2xl leading-relaxed">
-          A collection of web applications and automated workflows designed to 
+          A collection of web applications and automated workflows designed to
           drive business growth and operational efficiency.
         </p>
       </div>

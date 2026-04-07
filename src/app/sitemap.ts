@@ -2,14 +2,14 @@ import { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://yourname.vercel.app";
+  const base = "https://vergeo.company";
   const projectRoutes = projects.map((p) => ({
     url: `${base}/projects/${p.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
-  
+
   const routes: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date(), priority: 1, changeFrequency: "weekly" as const },
     { url: `${base}/projects`, lastModified: new Date(), priority: 0.9, changeFrequency: "weekly" as const },

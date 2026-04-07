@@ -10,17 +10,17 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: {
-    default: "Prosper Nation — Kaluba Prosper Musonda | Full Stack Developer & Automation Builder",
+    default: "Vergeo Group — Kaluba Prosper Musonda | Full Stack Developer & Automation Builder",
     template: "%s | Prosper Nation",
   },
   description:
     "I build fast, scalable web applications and workflow automations that drive growth. Full-stack development by Kaluba Prosper Musonda.",
-  metadataBase: new URL("https://yourname.vercel.app"), // Replace with your real domain
+  metadataBase: new URL("https://vergeo.company"), // Replace with your real domain
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://yourname.vercel.app",
-    siteName: "Prosper Nation Portfolio",
+    url: "https://vergeo.company",
+    siteName: "Vergeo Group Portfolio",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
