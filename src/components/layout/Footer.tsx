@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Globe, MessageSquare, User, Mail } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -17,13 +17,13 @@ export function Footer() {
           </p>
           <div className="flex gap-4">
             <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900 transition-colors">
-              <Github size={20} />
+              <Globe size={20} />
             </a>
             <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900 transition-colors">
-              <Twitter size={20} />
+              <MessageSquare size={20} />
             </a>
             <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900 transition-colors">
-              <Linkedin size={20} />
+              <User size={20} />
             </a>
             <a href="mailto:hello@yourdomain.com" className="text-gray-400 hover:text-gray-900 transition-colors">
               <Mail size={20} />
