@@ -3,61 +3,59 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-// This is the most important component — it sets the conversion tone immediately.
-// Lead with outcome, not job title.
 export function Hero() {
   return (
-    <section className="min-h-[90vh] flex items-center px-6 md:px-12 max-w-6xl mx-auto text-left">
-      <div className="max-w-3xl">
-        {/* Social proof hook — builds credibility before the pitch */}
+    <section className="min-h-[85vh] flex items-center px-6 md:px-12 max-w-6xl mx-auto text-left relative overflow-hidden">
+      {/* Background Decorative Gradient */}
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_10%_20%,rgba(59,130,246,0.03)_0%,transparent_50%)] z-0 pointer-events-none" />
+      
+      <div className="max-w-3xl relative z-10 py-12">
         <motion.p
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-sm font-medium text-blue-600 tracking-wide mb-4 uppercase"
+          className="text-xs font-bold text-blue-600 tracking-[0.2em] mb-4 uppercase"
         >
-          Available for freelance work
+          Prosper Nation Technology
         </motion.p>
 
         <motion.h1
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight mb-6"
+          className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.1] mb-6 tracking-tight"
         >
-          I build web apps and automations that{" "}
-          <span className="text-blue-600">actually ship.</span>
+          We build web apps and automations that{" "}
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">actually ship.</span>
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-lg text-gray-600 mb-10 max-w-xl leading-relaxed"
+          className="text-lg text-gray-500 mb-8 max-w-xl leading-relaxed font-medium"
         >
-          Full-stack developer specialising in e-commerce stores, business websites,
-          and workflow automations using N8N and AI tools. Based in Zambia, working
-          globally.
+          Full-stack development specializing in high-performance e-commerce, 
+          business systems, and N8N workflow automations. Based in Zambia, 
+          engineering for the world.
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-4"
         >
-          {/* Primary CTA */}
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors justify-center"
+            className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3.5 rounded-full font-bold hover:bg-blue-700 transition-all hover:scale-105 shadow-xl shadow-blue-500/25 justify-center"
           >
-            Start a project <ArrowRight size={16} />
+            Start a project <ArrowRight size={18} />
           </Link>
-          {/* Secondary CTA — the waitlist conversion */}
           <Link
             href="/waitlist"
-            className="inline-flex items-center gap-2 border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors justify-center"
+            className="inline-flex items-center gap-2 border border-gray-200 text-gray-800 px-8 py-3.5 rounded-full font-bold hover:bg-gray-50 transition-all justify-center backdrop-blur-sm"
           >
-            Join the platform waitlist
+            Join the waitlist
           </Link>
         </motion.div>
       </div>

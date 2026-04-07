@@ -8,30 +8,24 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-// Replace with your real name and domain once you buy one
 export const metadata: Metadata = {
   title: {
-    default: "Your Name — Full Stack Developer & Automation Builder",
-    template: "%s | Your Name",
+    default: "Prosper Nation — Kaluba Prosper Musonda | Full Stack Developer & Automation Builder",
+    template: "%s | Prosper Nation",
   },
   description:
-    "I build fast, scalable web applications and workflow automations that save time and drive growth. Available for freelance projects.",
-  metadataBase: new URL("https://yourname.vercel.app"),
+    "I build fast, scalable web applications and workflow automations that drive growth. Full-stack development by Kaluba Prosper Musonda.",
+  metadataBase: new URL("https://yourname.vercel.app"), // Replace with your real domain
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://yourname.vercel.app",
-    siteName: "Your Name Portfolio",
+    siteName: "Prosper Nation Portfolio",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    creator: "@yourhandle",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true },
+    creator: "@king5gates",
   },
 };
 
@@ -42,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="bg-white text-gray-900 antialiased">
+      <body className="bg-white text-gray-900 antialiased selection:bg-blue-100 selection:text-blue-900">
         <Navbar />
         <main>{children}</main>
         <Footer />
