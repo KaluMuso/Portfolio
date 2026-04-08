@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { ChatWidget } from "@/components/ui/ChatWidget";
+import { ChatWidget } from "@/components/ui/ChatWidgetWrapper";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";

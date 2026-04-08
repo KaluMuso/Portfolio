@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Message = {
   role: "user" | "assistant";
@@ -12,15 +13,17 @@ const SUGGESTED = [
   "How much does a store cost?",
   "Join the platform waitlist",
   "How fast can you build?",
+  "View all projects",
 ];
 
 export function ChatWidget() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
       content:
-        "Hi! I'm Vergeo's assistant. I can answer questions about services, pricing, and availability — or connect you directly with Kaluba. What can I help with?",
+        "Hi! I'm Vergeo's assistant. I can answer questions about services, pricing, and availability — or connect you directly with Kaluba. You can also reach him at vergeo.company/contact. What can I help with?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -31,6 +34,15 @@ export function ChatWidget() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
+
+  const handleSuggestedClick = (text: string) => {
+    if (text === "View all projects") {
+      router.push("/projects");
+      setOpen(false);
+      return;
+    }
+    send(text);
+  };
 
   const send = async (text: string) => {
     if (!text.trim() || loading) return;
@@ -57,7 +69,7 @@ export function ChatWidget() {
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Connection error. Reach me on WhatsApp: +260XXXXXXXXX" },
+        { role: "assistant", content: "Connection error. Reach me on WhatsApp: +267761359005" },
       ]);
     } finally {
       setLoading(false);
@@ -121,7 +133,7 @@ export function ChatWidget() {
               {SUGGESTED.map((s) => (
                 <button
                   key={s}
-                  onClick={() => send(s)}
+                  onClick={() => handleSuggestedClick(s)}
                   className="block w-full text-left text-xs text-blue-600 border border-blue-200 rounded-xl px-3 py-2 hover:bg-blue-50 transition-colors"
                 >
                   {s}
@@ -159,7 +171,7 @@ export function ChatWidget() {
             </button>
           </div>
           <p className="text-center text-xs text-gray-400 mt-2">
-            Powered by Vergeo AI · <a href="https://wa.me/260XXXXXXXXX" target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">WhatsApp instead</a>
+            Powered by Vergeo AI · <a href="https://wa.me/267761359005" target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">WhatsApp instead</a>
           </p>
         </div>
       </div>

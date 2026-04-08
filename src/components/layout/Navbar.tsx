@@ -35,18 +35,21 @@ export function Navbar() {
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8">
-          {links.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`text-sm font-semibold transition-all duration-200 ${pathname === href
-                ? "text-blue-600 underline underline-offset-4"
-                : "text-gray-500 hover:text-gray-900"
-                }`}
-            >
-              {label}
-            </Link>
-          ))}
+          {links.map(({ href, label }) => {
+            const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`text-sm font-semibold transition-all duration-200 ${isActive
+                  ? "text-blue-600 underline underline-offset-4"
+                  : "text-gray-500 hover:text-gray-900"
+                  }`}
+              >
+                {label}
+              </Link>
+            );
+          })}
           <Link
             href="/contact"
             className="bg-blue-600 text-white text-xs px-5 py-2 rounded-full font-bold hover:bg-blue-700 transition-all hover:scale-105 shadow-md shadow-blue-500/20"

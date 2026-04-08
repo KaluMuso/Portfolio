@@ -8,13 +8,13 @@ export default function ContactPage() {
       </p>
       <div className="flex flex-col gap-4 max-w-sm mx-auto">
         <a
-          href="mailto:hello@yourdomain.com"
+          href="mailto:hello@vergeo.company"
           className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors"
         >
           Email Me
         </a>
         <a
-          href="https://wa.me/260761359005?text=Hey%20Kaluba%2C%20I%20saw%20your%20profile%20on%20your%20website%20and%20would%20like%20to%20find%20out%20more%20about%20the%20services%20you%20provide"
+          href="https://wa.me/267761359005?text=Hi+Kaluba%2C+I+found+you+on+vergeo.company+and+I+would+like+to+discuss+a+project."
           target="_blank"
           rel="noopener noreferrer"
           className="border border-gray-300 text-gray-700 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition-colors"
