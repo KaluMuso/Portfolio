@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { ChatWidget } from "@/components/ui/ChatWidget";
+import { PageTransition } from "@/components/layout/PageTransition";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -34,13 +35,47 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": ["Person", "LocalBusiness"],
+    "name": "Kaluba Prosper Musonda",
+    "legalName": "Vergeo Group",
+    "url": "https://www.vergeo.company",
+    "description": "Full Stack Developer & Automation Builder",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Lusaka",
+      "addressCountry": "ZM"
+    },
+    "knowsAbout": [
+      "Web Development",
+      "Workflow Automation",
+      "Full Stack Development",
+      "Next.js",
+      "Automation Builder"
+    ],
+    "image": "https://www.vergeo.company/og-image.png",
+    "sameAs": [
+      "https://github.com/KaluMuso",
+      "https://twitter.com/king5gates"
+    ]
+  };
+
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="bg-white text-gray-900 antialiased selection:bg-blue-100 selection:text-blue-900">
         <Navbar />
-        <main>{children}</main>
+        <PageTransition>
+          <main>{children}</main>
+        </PageTransition>
         <Footer />
-        <WhatsAppButton />
+        <ChatWidget />
         <Analytics />
       </body>
     </html>

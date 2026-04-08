@@ -26,6 +26,7 @@ export function Navbar() {
             width={140}
             height={102}
             className="rounded-sm"
+            priority
           />
           <span className="font-bold text-gray-900 text-lg tracking-tight">
             <span className="text-blue-600"> Group.</span>
