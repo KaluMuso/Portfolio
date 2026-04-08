@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Linkedin, Github, MessageCircle, Mail } from "lucide-react";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -14,45 +15,45 @@ export function Footer() {
             <Image
               src="/logo.png"
               alt="Vergeo Group Logo"
-              width={204}
+              width={224}
               height={24}
               className="rounded-sm"
             />
           </Link>
           <p className="text-gray-500 max-w-sm leading-relaxed mb-6 text-sm">
-            Full-stack developer and automation builder based in Zambia.
+            Full-stack developer and automation builder based in {SITE_CONFIG.location.country}.
             Helping businesses ship fast, scalable products globally.
           </p>
           <div className="flex gap-4">
-            <a 
-              href="https://github.com/kalubamusonda" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={SITE_CONFIG.socials.github}
+              target="_blank"
+              rel="noopener noreferrer"
               className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all"
               title="GitHub"
             >
               <Github size={20} />
             </a>
-            <a 
-              href="https://www.linkedin.com/in/kaluba-musonda" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={SITE_CONFIG.socials.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
               className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"
               title="LinkedIn"
             >
               <Linkedin size={20} />
             </a>
-            <a 
-              href="https://wa.me/267761359005" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={SITE_CONFIG.socials.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
               className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-green-600 transition-all"
               title="WhatsApp"
             >
               <MessageCircle size={20} />
             </a>
-            <a 
-              href="mailto:hello@vergeo.company" 
+            <a
+              href={`mailto:${SITE_CONFIG.email}`}
               className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-500 transition-all"
               title="Email"
             >
@@ -92,11 +93,11 @@ export function Footer() {
       </div>
 
       <div className="max-w-6xl mx-auto pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-gray-400">
-        <p>© {currentYear} Kaluba Prosper Musonda. All rights reserved.</p>
+        <p>© {currentYear} {SITE_CONFIG.developerName}. All rights reserved.</p>
         <div className="flex items-center gap-4">
-          <p>hello@vergeo.company</p>
+          <p>{SITE_CONFIG.email}</p>
           <span className="text-gray-200">|</span>
-          <p>Built with ProsperNation Technology.</p>
+          <p>Built with {SITE_CONFIG.name} Technology.</p>
         </div>
       </div>
     </footer>

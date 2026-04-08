@@ -20,7 +20,8 @@ export async function POST(req: Request) {
     const data = await res.json();
     // N8N workflow must return { reply: "..." }
     return NextResponse.json({ reply: data.reply });
-  } catch {
+  } catch (error) {
+    console.error("Chat API error:", error);
     return NextResponse.json(
       { reply: "I'm having trouble right now. Please WhatsApp Kaluba directly." },
       { status: 200 } // Return 200 so the widget shows the fallback gracefully

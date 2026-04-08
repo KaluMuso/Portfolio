@@ -17,17 +17,25 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { name, email, businessType } = body;
+    const { name, email, phone, whatsapp, businessType, otherBusinessType } = body;
 
-    if (!name || !email) {
+    if (!name || !email || !phone) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
     const { error } = await supabase
       .from("waitlist")
-      .insert([{ name, email, business_type: businessType }]);
+      .insert([{ 
+        name, 
+        email, 
+        phone, 
+        whatsapp, 
+        business_type: businessType,
+        other_business_type: otherBusinessType
+      }]);
 
     if (error) {
+      console.error("Supabase insert error:", error);
       // Duplicate email — treat as success to avoid enumeration
       if (error.code === "23505") {
         return NextResponse.json({ success: true, message: "Already on list" });
@@ -37,6 +45,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("Waitlist error:", error);
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 }

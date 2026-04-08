@@ -116,11 +116,10 @@ export function ChatWidget() {
           {messages.map((m, i) => (
             <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-[80%] text-sm px-4 py-2.5 rounded-2xl leading-relaxed ${
-                  m.role === "user"
-                    ? "bg-blue-600 text-white rounded-br-sm"
-                    : "bg-gray-100 text-gray-800 rounded-bl-sm"
-                }`}
+                className={`max-w-[80%] text-sm px-4 py-2.5 rounded-2xl leading-relaxed ${m.role === "user"
+                  ? "bg-blue-600 text-white rounded-br-sm"
+                  : "bg-gray-100 text-gray-800 rounded-bl-sm"
+                  }`}
               >
                 {m.content}
               </div>
@@ -171,7 +170,7 @@ export function ChatWidget() {
             </button>
           </div>
           <p className="text-center text-xs text-gray-400 mt-2">
-            Powered by Vergeo AI · <a href="https://wa.me/267761359005" target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">WhatsApp instead</a>
+            Powered by Vergeo AI · <a href="https://wa.me/260761359005?text=Hey%20Kaluba%2C%20I%20saw%20your%20profile%20on%20your%20website%20and%20would%20like%20to%20find%20out%20more%20about%20the%20services%20you%20provide" target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">WhatsApp instead</a>
           </p>
         </div>
       </div>

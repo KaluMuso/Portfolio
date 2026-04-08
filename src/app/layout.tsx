@@ -5,23 +5,23 @@ import { Footer } from "@/components/layout/Footer";
 import { ChatWidget } from "@/components/ui/ChatWidgetWrapper";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { Analytics } from "@vercel/analytics/react";
+import { SITE_CONFIG } from "@/lib/constants";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: {
-    default: "Vergeo Group — Kaluba Prosper Musonda | Full Stack Developer & Automation Builder",
-    template: "%s | Prosper Nation",
+    default: `${SITE_CONFIG.name} — ${SITE_CONFIG.developerName} | Full Stack Developer & Automation Builder`,
+    template: `%s | ${SITE_CONFIG.name}`,
   },
-  description:
-    "I build fast, scalable web applications and workflow automations that drive growth. Full-stack development by Kaluba Prosper Musonda.",
-  metadataBase: new URL("https://vergeo.company"), // Replace with your real domain
+  description: SITE_CONFIG.description,
+  metadataBase: new URL(SITE_CONFIG.url),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://vergeo.company",
-    siteName: "Vergeo Group Portfolio",
+    url: SITE_CONFIG.url,
+    siteName: `${SITE_CONFIG.name} Portfolio`,
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
@@ -38,14 +38,14 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": ["Person", "LocalBusiness"],
-    "name": "Kaluba Prosper Musonda",
-    "legalName": "Vergeo Group",
-    "url": "https://www.vergeo.company",
+    "name": SITE_CONFIG.developerName,
+    "legalName": SITE_CONFIG.name,
+    "url": SITE_CONFIG.url,
     "description": "Full Stack Developer & Automation Builder",
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Lusaka",
-      "addressCountry": "ZM"
+      "addressLocality": SITE_CONFIG.location.city,
+      "addressCountry": SITE_CONFIG.location.countryCode
     },
     "knowsAbout": [
       "Web Development",
@@ -54,10 +54,10 @@ export default function RootLayout({
       "Next.js",
       "Automation Builder"
     ],
-    "image": "https://www.vergeo.company/og-image.png",
+    "image": `${SITE_CONFIG.url}/og-image.png`,
     "sameAs": [
-      "https://github.com/KaluMuso",
-      "https://twitter.com/king5gates"
+      SITE_CONFIG.socials.github,
+      SITE_CONFIG.socials.twitter
     ]
   };
 

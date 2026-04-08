@@ -66,7 +66,7 @@ export function Testimonials() {
             >
               <StarRating />
               <blockquote className="text-gray-700 leading-relaxed mb-6 text-base font-serif italic">
-                "{t.quote}"
+                &quot;{t.quote}&quot;
               </blockquote>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">

@@ -8,9 +8,9 @@ export default function ThankYouPage() {
         <div className="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-8">
           <CheckCircle size={32} />
         </div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-6">You're on the list!</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-6">You&apos;re on the list!</h1>
         <p className="text-gray-600 text-lg mb-10 leading-relaxed">
-          Thanks for joining the waitlist. I'll reach out via email shortly to 
+          Thanks for joining the waitlist. I&apos;ll reach out via email shortly to 
           discuss your business needs and early access availability.
         </p>
         <Link 

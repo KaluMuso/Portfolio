@@ -10,7 +10,7 @@ export function WaitlistCTA() {
             Ready to scale your business with automation?
           </h2>
           <p className="text-blue-100 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
-            I'm building a high-performance e-commerce platform that automates 
+            I&apos;m building a high-performance e-commerce platform that automates 
             everything from order capture to inventory updates. Join the early 
             access list.
           </p>

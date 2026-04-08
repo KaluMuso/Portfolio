@@ -59,7 +59,7 @@ export function ContactForm() {
         <p className="text-2xl mb-2">✓</p>
         <h3 className="font-semibold text-green-800 text-lg mb-1">Message received!</h3>
         <p className="text-green-700 text-sm">
-          I'll reply within 24 hours. For urgent work, WhatsApp me directly.
+          I&apos;ll reply within 24 hours. For urgent work, WhatsApp me directly.
         </p>
       </div>
     );

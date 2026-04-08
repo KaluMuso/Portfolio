@@ -1,4 +1,5 @@
 import { Linkedin, Github, MessageCircle, Mail } from "lucide-react";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export default function AboutPage() {
   return (
@@ -6,7 +7,7 @@ export default function AboutPage() {
       <h1 className="text-4xl font-bold text-gray-900 mb-8 tracking-tight">About Me</h1>
       <div className="prose prose-lg text-gray-600 mb-12">
         <p className="mb-6 leading-relaxed">
-          I'm a full-stack developer and automation builder based in Zambia, 
+          I&apos;m a full-stack developer and automation builder based in {SITE_CONFIG.location.country}, 
           dedicated to helping businesses ship fast, scalable products and 
           automated workflows.
         </p>
@@ -18,7 +19,7 @@ export default function AboutPage() {
         
         <div className="flex gap-5 items-center not-prose">
           <a 
-            href="https://github.com/kalubamusonda" 
+            href={SITE_CONFIG.socials.github} 
             target="_blank" 
             rel="noopener noreferrer" 
             className="p-3 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all border border-gray-100"
@@ -27,7 +28,7 @@ export default function AboutPage() {
             <Github size={22} />
           </a>
           <a 
-            href="https://www.linkedin.com/in/kaluba-musonda" 
+            href={SITE_CONFIG.socials.linkedin} 
             target="_blank" 
             rel="noopener noreferrer" 
             className="p-3 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all border border-gray-100"
@@ -36,7 +37,7 @@ export default function AboutPage() {
             <Linkedin size={22} />
           </a>
           <a 
-            href="https://wa.me/267761359005" 
+            href={SITE_CONFIG.socials.whatsapp} 
             target="_blank" 
             rel="noopener noreferrer" 
             className="p-3 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-green-600 transition-all border border-gray-100"
@@ -45,7 +46,7 @@ export default function AboutPage() {
             <MessageCircle size={22} />
           </a>
           <a 
-            href="mailto:hello@vergeo.company" 
+            href={`mailto:${SITE_CONFIG.email}`} 
             className="p-3 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-500 transition-all border border-gray-100"
             title="Email"
           >
