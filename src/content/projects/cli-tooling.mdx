@@ -1,0 +1,49 @@
+---
+title: "Internal Developer CLI"
+description: "Automation tool that standardized repository setup and reduced package bootstrapping time by 90%."
+slug: "cli-tooling"
+featured: false
+status: "live"
+published: true
+category: "automation"
+tech: ["Node.js", "Commander", "Zod", "Vitest", "DX"]
+github: "https://github.com/kaluba/cli-tooling"
+demo: ""
+coverImage: "/images/og-placeholder.svg"
+createdAt: "2026-01-08"
+results:
+  - label: "Repo Consistency"
+    value: "100%"
+  - label: "Setup Time Saved"
+    value: "90%"
+---
+
+## Problem
+
+Software engineering teams were manually copying boilerplate for every new package in the design system. This led to fragmented linting rules, inconsistent testing setups, and a high barrier to entry for new contributors.
+
+## Solution
+
+I shipped a custom Node.js CLI tool that automates the generation of internal packages. The tool ensures all new repositories adhere to the company's "Golden Path" for development, testing, and CI/CD.
+
+## Architecture
+
+The CLI is built for speed and reliability:
+- **Command Dispatcher**: Built with Commander.js for a professional interface.
+- **Validation Engine**: Zod-based schema validation for user input and configuration.
+- **Template System**: Uses a modular template approach to generate files based on package types.
+- **Safety**: Robust error handling and rollback mechanisms for failed operations.
+
+## Tech Stack
+
+- **Runtime**: Node.js.
+- **Validation**: Zod for type-safe configuration.
+- **Testing**: Vitest for ultra-fast internal verification.
+- **Documentation**: Auto-generated READMEs and contribution guides.
+
+## Results
+
+- **90% faster bootstrapping** for new design-system packages.
+- **100% compliance** with internal code quality and linting standards.
+- **Reduced friction** for cross-team contributions, as every package now shares a familiar structure.
+---

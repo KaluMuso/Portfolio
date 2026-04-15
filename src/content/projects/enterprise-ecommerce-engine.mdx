@@ -1,0 +1,67 @@
+---
+title: "Enterprise E-commerce Engine"
+description: "High-performance headless commerce for multi-region fulfillment and international scaling."
+slug: "enterprise-ecommerce-engine"
+featured: true
+status: "live"
+published: true
+category: "web"
+tech: ["React", "Next.js", "FastAPI", "Stripe", "PostgreSQL", "Docker"]
+github: "https://github.com/kaluba/ecommerce-engine"
+demo: "https://ecommerce-demo.kaluba.me"
+coverImage: "/images/og-placeholder.svg"
+createdAt: "2026-03-10"
+results:
+  - label: "Checkout Speed"
+    value: "+40%"
+  - label: "Abandonment Rate"
+    value: "-25%"
+---
+
+## Problem
+
+A rapidly growing retailer was struggling with a monolithic e-commerce platform that couldn't handle international traffic spikes or complex, region-specific fulfillment rules. Page load times were exceeding 4 seconds, leading to a high bounce rate and lost revenue.
+
+<Callout type="warning">
+  For every 100ms of latency, e-commerce conversion rates can drop by as much as 7%.
+</Callout>
+
+## Solution
+
+I architected and implemented a modern headless commerce solution. By decoupling the frontend from the backend, we achieved ultra-fast performance while allowing for highly customized, localized shopping experiences.
+
+<MetricCard 
+  label="Performance Boost" 
+  value="40%" 
+  description="Improvement in checkout flow speed and overall page responsiveness." 
+/>
+
+## Architecture
+
+The system utilizes a distributed microservices approach:
+- **Frontend**: Next.js App Router with ISR (Incremental Static Regeneration) for lightning-fast product pages.
+- **Backend**: FastAPI (Python) handles the core business logic, inventory, and order management.
+- **Payments**: A robust Stripe integration that supports multi-currency and localized tax compliance.
+- **Infrastructure**: Containerized with Docker and deployed on AWS for seamless scaling.
+
+<Callout type="idea">
+  Implementing a globally distributed CDN for static assets and product data reduced time-to-first-byte (TTFB) by 60% for international users.
+</Callout>
+
+## Tech Stack
+
+- **Framework**: Next.js for a seamless, SEO-friendly user interface.
+- **API**: FastAPI for its high-performance asynchronous capabilities.
+- **Payment**: Stripe for secure and flexible global transactions.
+- **Database**: PostgreSQL for reliable and structured data persistence.
+
+## Results
+
+- **40% faster checkout flow**, significantly improving user satisfaction.
+- **25% reduction in cart abandonment** within the first three months of launch.
+- **Successful expansion** into three new international markets with localized fulfillment logic.
+
+<Callout type="success">
+  The new platform successfully handled a 300% traffic surge during Black Friday without any downtime or performance degradation.
+</Callout>
+---

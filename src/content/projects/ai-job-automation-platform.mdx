@@ -1,0 +1,67 @@
+---
+title: "AI Job Automation Platform"
+description: "End-to-end automation system that reduced manual application search by 80% using LLMs."
+slug: "ai-job-automation-platform"
+featured: true
+status: "in-progress"
+published: true
+category: "ai"
+tech: ["Next.js", "FastAPI", "n8n", "Supabase", "Twilio", "OpenAI"]
+github: "https://github.com/kaluba/ai-job-platform"
+demo: "https://ai-job-platform.vercel.app"
+coverImage: "/images/og-placeholder.svg"
+createdAt: "2026-04-05"
+results:
+  - label: "Manual Effort Reduced"
+    value: "80%"
+  - label: "Throughput Increase"
+    value: "5x"
+---
+
+## Problem
+
+Job discovery and application processes are notoriously manual, repetitive, and inefficient. Applicants spend hours filtering through irrelevant listings, leading to "application fatigue" and missed opportunities.
+
+<Callout type="warning">
+  Manual job search is a multi-billion dollar productivity sink for high-skilled professionals.
+</Callout>
+
+## Solution
+
+I designed and deployed an AI-powered pipeline that automates the entire discovery cycle. The system monitors multiple job boards, uses LLMs to rank opportunities based on specific candidate profiles, and triggers automated workflows for the next steps.
+
+<MetricCard 
+  label="Automation ROI" 
+  value="80%" 
+  description="Reduction in manual search time across 500+ daily listings." 
+/>
+
+## Architecture
+
+The system is built as a modular event-driven architecture:
+- **Discovery Layer**: Scrapers and API integrations (FastAPI/Python) monitor listings.
+- **Intelligence Layer**: OpenAI GPT-4 evaluates job descriptions against JSON-based candidate profiles.
+- **Orchestration**: n8n workflows manage data flow between the intelligence layer and notifications.
+- **Messaging**: A Twilio-powered WhatsApp bot provides real-time alerts and interactive filtering.
+
+<Callout type="idea">
+  By moving the logic from a polling-based model to an event-driven webhook model, we reduced infrastructure costs by 40%.
+</Callout>
+
+## Tech Stack
+
+- **Frontend**: Next.js (App Router) for the analytics dashboard.
+- **Backend**: FastAPI for high-performance scraping and processing.
+- **Automation**: n8n for workflow orchestration.
+- **Database**: Supabase (PostgreSQL) for persistence and real-time state.
+
+## Results
+
+- **80% reduction** in manual search time for beta users.
+- **5x increase** in application throughput without increasing candidate effort.
+- **Real-time notifications** via WhatsApp, ensuring 100% visibility on high-match opportunities.
+
+<Callout type="success">
+  Beta users reported receiving high-quality interviews within the first week of deployment.
+</Callout>
+---

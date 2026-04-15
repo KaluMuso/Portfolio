@@ -1,0 +1,49 @@
+---
+title: "Real-time Analytics Engine"
+description: "Scalable data processing dashboard that tracks business metrics with sub-200ms latency."
+slug: "sample-dashboard"
+featured: true
+status: "live"
+published: true
+category: "web"
+tech: ["React", "Next.js", "Tailwind CSS", "Recharts", "Supabase"]
+github: "https://github.com/kaluba/dashboard"
+demo: "https://demo-dashboard.vercel.app"
+coverImage: "/images/og-placeholder.svg"
+createdAt: "2026-02-15"
+results:
+  - label: "Query Latency"
+    value: "<200ms"
+  - label: "Data Freshness"
+    value: "Real-time"
+---
+
+## Problem
+
+Subscription-based businesses often struggle with fragmented data across different payment and usage platforms. Calculating key metrics like MRR, churn, and CLV in real-time is computationally expensive and slow.
+
+## Solution
+
+I built a high-performance analytics engine that centralizes data from disparate sources. The system provides an interactive dashboard where stakeholders can monitor business health with zero lag.
+
+## Architecture
+
+The engine uses a modern web stack for speed and developer efficiency:
+- **Frontend**: A React-based SPA built within the Next.js framework for SEO and performance.
+- **Visualization**: Custom Recharts implementation for complex time-series data.
+- **Data Fetching**: Optimistic updates and SWR (Stale-While-Revalidate) for a perceived instant experience.
+- **Storage**: Supabase handles the real-time data ingestion and querying.
+
+## Tech Stack
+
+- **Framework**: Next.js (App Router).
+- **Styling**: Tailwind CSS for a clean, performance-first UI.
+- **Charts**: Recharts for responsive and interactive visualizations.
+- **Database**: Supabase (PostgreSQL) with Real-time listeners.
+
+## Results
+
+- **Sub-200ms latency** on all primary metric queries.
+- **Real-time synchronization** across all devices whenever new data is ingested.
+- **Improved decision-making** speed for business teams by providing a single source of truth.
+---

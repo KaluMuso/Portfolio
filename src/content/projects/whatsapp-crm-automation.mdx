@@ -1,0 +1,69 @@
+---
+title: "WhatsApp CRM Automation"
+description: "Intelligent support bot and CRM integration that automates 60% of customer support queries."
+slug: "whatsapp-crm-automation"
+featured: true
+status: "live"
+published: true
+category: "automation"
+tech: ["Node.js", "Supabase", "Anthropic", "Twilio", "Redis"]
+github: "https://github.com/kaluba/whatsapp-crm"
+demo: ""
+coverImage: "/images/og-placeholder.svg"
+createdAt: "2026-03-25"
+results:
+  - label: "Queries Automated"
+    value: "60%"
+  - label: "Response Time"
+    value: "<30s"
+---
+
+## Problem
+
+A fast-growing service company was facing a bottleneck in their customer support operations on WhatsApp. Manual handling of basic queries like appointment scheduling, pricing inquiries, and order tracking was consuming 70% of support staff's time, leading to delayed responses for complex issues.
+
+<Callout type="warning">
+  Slow customer support response times can lead to a 15% drop in customer retention and lifetime value.
+</Callout>
+
+## Solution
+
+I developed an AI-powered CRM automation bot that integrates directly with the company's internal knowledge base and customer database. The system uses advanced natural language processing to understand customer intent and provide immediate, accurate answers or perform requested actions.
+
+<MetricCard 
+  label="Support Efficiency" 
+  value="60%" 
+  description="Reduction in manually handled support tickets through AI-driven resolution." 
+/>
+
+## Architecture
+
+The automation engine is designed for reliability and intelligence:
+- **Messaging Pipeline**: Twilio's WhatsApp API for receiving and sending messages at scale.
+- **Intelligence Core**: Anthropic's Claude 3.5 Sonnet for its superior reasoning and context handling.
+- **Context Retrieval**: A RAG (Retrieval-Augmented Generation) system using Supabase Vector to pull relevant information from internal documentation and FAQs.
+- **Session Management**: Redis for ultra-fast, ephemeral session storage to maintain conversation context.
+- **CRM Sync**: Bi-directional integration with the company's internal CRM for real-time customer data updates.
+
+<Callout type="idea">
+  By utilizing a "human-in-the-loop" handoff mechanism, the bot can seamlessly escalate complex queries to live agents, providing them with a full transcript and context of the AI interaction.
+</Callout>
+
+## Tech Stack
+
+- **Runtime**: Node.js for its non-blocking I/O and vast ecosystem.
+- **Database/Vector**: Supabase (Postgres with pgvector) for both structured data and semantic search.
+- **AI**: Anthropic Claude 3.5 Sonnet for the intelligence layer.
+- **Communications**: Twilio for reliable WhatsApp and SMS delivery.
+- **State**: Redis for high-performance session and state management.
+
+## Results
+
+- **60% of common support queries** are now fully resolved by the AI, freeing up support teams.
+- **Average response time** crashed from over 4 hours to under 30 seconds for automated inquiries.
+- **30% improvement** in overall customer satisfaction scores (CSAT) since implementation.
+
+<Callout type="success">
+  The system successfully handled over 5,000 unique customer interactions in its first month with zero downtime and minimal human intervention.
+</Callout>
+---
