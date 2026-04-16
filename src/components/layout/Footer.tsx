@@ -1,103 +1,167 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { Linkedin, Github, MessageCircle, Mail } from "lucide-react";
+import { Linkedin, Github, Mail, Download, Phone, MapPin, MessageSquare } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
 
+const navLinks = [
+  { label: "Projects",  href: "/projects"  },
+  { label: "Services",  href: "/services"  },
+  { label: "About",     href: "/about"     },
+  { label: "Waitlist",  href: "/waitlist"  },
+  { label: "Contact",   href: "/contact"   },
+];
+
+const legalLinks = [
+  { label: "Privacy Policy",    href: "/privacy" },
+  { label: "Terms of Service",  href: "/terms"   },
+];
+
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-white border-t border-gray-100 pt-16 pb-10 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-10 mb-12">
-        <div className="md:col-span-2">
-          <Link href="/" className="flex items-center gap-2 mb-6">
-            <Image
-              src="/logo.png"
-              alt="Vergeo Group Logo"
-              width={224}
-              height={24}
-              className="rounded-sm"
-            />
-          </Link>
-          <p className="text-gray-500 max-w-sm leading-relaxed mb-6 text-sm">
-            Full-stack developer and automation builder based in {SITE_CONFIG.location.country}.
-            Helping businesses ship fast, scalable products globally.
-          </p>
-          <div className="flex gap-4">
-            <a
-              href={SITE_CONFIG.socials.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all"
-              title="GitHub"
-            >
-              <Github size={20} />
-            </a>
-            <a
-              href={SITE_CONFIG.socials.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"
-              title="LinkedIn"
-            >
-              <Linkedin size={20} />
-            </a>
-            <a
-              href={SITE_CONFIG.socials.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-green-600 transition-all"
-              title="WhatsApp"
-            >
-              <MessageCircle size={20} />
-            </a>
-            <a
-              href={`mailto:${SITE_CONFIG.email}`}
-              className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-blue-500 transition-all"
-              title="Email"
-            >
-              <Mail size={20} />
-            </a>
+    <footer className="bg-gray-50/50 dark:bg-[#060608] border-t border-gray-100 dark:border-white/5 pt-20 pb-10 px-6 md:px-12">
+      <div className="max-w-7xl mx-auto">
+        {/* Top grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+          {/* Brand column */}
+          <div className="md:col-span-5">
+            <Link href="/" className="flex items-center gap-3 mb-6 group w-fit">
+              <div className="relative w-10 aspect-square rounded-xl overflow-hidden group-hover:rotate-12 transition-transform duration-300">
+                <Image
+                  src="/verge.png"
+                  alt="Vergeo Group Logo"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <span className="font-black text-gray-900 dark:text-white text-xl tracking-tighter">
+                Vergeo<span className="text-blue-600">.</span>
+              </span>
+            </Link>
+
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs leading-relaxed mb-8 font-medium">
+              Building the next generation of digital products with technical
+              precision and creative flair. Engineering for the modern web.
+            </p>
+
+            {/* Contact details */}
+            <div className="space-y-3 mb-8">
+              <a
+                href={`mailto:${SITE_CONFIG.email}`}
+                className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium group"
+              >
+                <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-500/10 transition-colors">
+                  <Mail size={14} />
+                </div>
+                {SITE_CONFIG.email}
+              </a>
+              <a
+                href={SITE_CONFIG.socials.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-medium group"
+              >
+                <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-emerald-500/10 transition-colors">
+                  <MessageSquare size={14} />
+                </div>
+                +267 761 359 005
+              </a>
+              <div className="flex items-center gap-3 text-sm text-gray-400 font-medium">
+                <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                  <MapPin size={14} />
+                </div>
+                Lusaka, Zambia
+              </div>
+            </div>
+
+            {/* Social icons */}
+            <div className="flex gap-3">
+              {[
+                { icon: Github,    href: SITE_CONFIG.socials.github,    title: "GitHub",    hover: "hover:bg-gray-900 hover:text-white dark:hover:bg-white/10 dark:hover:text-white" },
+                { icon: Linkedin,  href: SITE_CONFIG.socials.linkedin,  title: "LinkedIn",  hover: "hover:bg-blue-600 hover:text-white" },
+                { icon: Phone,     href: SITE_CONFIG.socials.whatsapp,  title: "WhatsApp",  hover: "hover:bg-emerald-500 hover:text-white" },
+                { icon: Mail,      href: `mailto:${SITE_CONFIG.email}`, title: "Email",     hover: "hover:bg-blue-500 hover:text-white" },
+              ].map((s, i) => (
+                <a
+                  key={i}
+                  href={s.href}
+                  target={s.href.startsWith("mailto") ? undefined : "_blank"}
+                  rel="noopener noreferrer"
+                  title={s.title}
+                  className={`w-10 h-10 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 flex items-center justify-center transition-all duration-300 ${s.hover}`}
+                >
+                  <s.icon size={17} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Spacer */}
+          <div className="hidden md:block md:col-span-1" />
+
+          {/* Navigation */}
+          <div className="md:col-span-2">
+            <h4 className="font-black text-gray-900 dark:text-white mb-6 uppercase text-[10px] tracking-[0.25em]">
+              Platform
+            </h4>
+            <ul className="space-y-3">
+              {navLinks.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    href={l.href}
+                    className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal + Download */}
+          <div className="md:col-span-4">
+            <h4 className="font-black text-gray-900 dark:text-white mb-6 uppercase text-[10px] tracking-[0.25em]">
+              Legal
+            </h4>
+            <ul className="space-y-3 mb-10">
+              {legalLinks.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    href={l.href}
+                    className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            {/* Download company profile */}
+            <div className="p-5 rounded-2xl bg-blue-600/5 dark:bg-blue-600/8 border border-blue-500/15">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 mb-2">
+                Company Profile
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-4 leading-relaxed">
+                Download our full company profile — services, case studies &amp; pricing.
+              </p>
+              <a
+                href="/company-profile.pdf"
+                download
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black uppercase tracking-wider px-5 py-2.5 rounded-xl transition-all hover:scale-[1.03] active:scale-[0.97] shadow-lg shadow-blue-600/25"
+              >
+                <Download size={13} />
+                Download PDF
+              </a>
+            </div>
           </div>
         </div>
 
-        <div>
-          <h4 className="font-bold text-gray-900 mb-5 uppercase text-[10px] tracking-widest">Navigation</h4>
-          <ul className="space-y-3">
-            {["Projects", "Services", "About", "Waitlist", "Contact"].map((item) => (
-              <li key={item}>
-                <Link href={`/${item.toLowerCase()}`} className="text-sm text-gray-500 hover:text-blue-600 transition-colors font-medium">
-                  {item}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-bold text-gray-900 mb-5 uppercase text-[10px] tracking-widest">Legal</h4>
-          <ul className="space-y-3">
-            <li>
-              <Link href="/privacy" className="text-sm text-gray-500 hover:text-blue-600 transition-colors font-medium">
-                Privacy Policy
-              </Link>
-            </li>
-            <li>
-              <Link href="/terms" className="text-sm text-gray-500 hover:text-blue-600 transition-colors font-medium">
-                Terms of Service
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-gray-400">
-        <p>© {currentYear} {SITE_CONFIG.developerName}. All rights reserved.</p>
-        <div className="flex items-center gap-4">
-          <p>{SITE_CONFIG.email}</p>
-          <span className="text-gray-200">|</span>
-          <p>Built with {SITE_CONFIG.name} Technology.</p>
+        {/* Bottom bar */}
+        <div className="pt-8 border-t border-gray-100 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-black text-gray-400 uppercase tracking-wider">
+          <p>© {year} {SITE_CONFIG.name}. All rights reserved.</p>
+          <p>Built with precision by Vergeo · Lusaka, Zambia</p>
         </div>
       </div>
     </footer>
