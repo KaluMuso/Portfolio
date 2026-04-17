@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
-// Using Supabase since you already know that stack
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Only create the client if the environment variables exist
-const supabase = (supabaseUrl && supabaseServiceKey) 
+const supabase = (supabaseUrl && supabaseServiceKey)
   ? createClient(supabaseUrl, supabaseServiceKey)
   : null;
 
@@ -17,26 +15,26 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { name, email, phone, whatsapp, businessType, otherBusinessType } = body;
+    const { name, companyName, industry, email, phone, whatsapp, district } = body;
 
     if (!name || !email || !phone) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const { error } = await supabase
       .from("waitlist")
-      .insert([{ 
-        name, 
-        email, 
-        phone, 
-        whatsapp, 
-        business_type: businessType,
-        other_business_type: otherBusinessType
+      .insert([{
+        name,
+        company_name: companyName,
+        industry,
+        email,
+        phone,
+        whatsapp,
+        district,
       }]);
 
     if (error) {
       console.error("Supabase insert error:", error);
-      // Duplicate email — treat as success to avoid enumeration
       if (error.code === "23505") {
         return NextResponse.json({ success: true, message: "Already on list" });
       }

@@ -25,7 +25,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => { setOpen(false); }, [pathname]);
 
   return (
@@ -41,15 +40,17 @@ export function Navbar() {
         <Link href="/" className="flex items-center gap-2.5 group shrink-0">
           <div className="relative w-8 md:w-9 aspect-square rounded-lg overflow-hidden group-hover:rotate-12 transition-transform duration-300">
             <Image
-              src="/verge.png"
+              src="/Vergeo5.png"
               alt="Vergeo Group"
               fill
               className="object-cover"
               priority
             />
           </div>
-          <span className="font-black text-gray-900 dark:text-white text-lg tracking-tighter">
-            Vergeo<span className="text-blue-600">.</span>
+          <span className="font-black text-lg tracking-tighter">
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
+              Vergeo Group
+            </span>
           </span>
         </Link>
 

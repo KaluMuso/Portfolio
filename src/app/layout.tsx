@@ -4,7 +4,6 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ChatWidget } from "@/components/ui/ChatWidgetWrapper";
 import { PageTransition } from "@/components/layout/PageTransition";
-import { WhatsAppFloat } from "@/components/ui/WhatsAppFloat";
 import { Analytics } from "@vercel/analytics/react";
 import { SITE_CONFIG } from "@/lib/constants";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -80,7 +79,6 @@ export default function RootLayout({
           </PageTransition>
           <Footer />
           <ChatWidget />
-          <WhatsAppFloat />
         </ThemeProvider>
         <Analytics />
       </body>
