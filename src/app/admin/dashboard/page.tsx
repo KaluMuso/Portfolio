@@ -1,168 +1,188 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
-import { Users, FolderOpen, Settings, LogOut, Activity, TrendingUp, CheckCircle, Clock, BarChart3 } from "lucide-react";
+import { Users, FolderOpen, TrendingUp, Clock, ArrowUpRight, Activity, CheckCircle, AlertCircle } from "lucide-react";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { createBrowserClient } from "@/lib/supabase-admin";
 
-const navItems = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: <BarChart3 size={18} /> },
-  { href: "/admin/projects",  label: "Projects",  icon: <FolderOpen size={18} /> },
-  { href: "/admin/waitlist",  label: "Waitlist",  icon: <Users size={18} /> },
-  { href: "/admin/settings",  label: "Settings",  icon: <Settings size={18} /> },
-];
-
 export default function AdminDashboard() {
-  const router = useRouter();
-  const [user, setUser] = useState<{ email?: string } | null>(null);
-  const [stats, setStats] = useState({ waitlist: 0, projects: 0, messages: 0 });
+  const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
+  const [recentEntries, setRecentEntries] = useState<{ name: string; company_name: string; district: string; created_at: string }[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const init = async () => {
-      const supabase = createBrowserClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { router.push("/admin/login"); return; }
-      setUser(session.user);
-
-      const [{ count: waitlistCount }, { count: projectCount }] = await Promise.all([
-        supabase.from("waitlist").select("*", { count: "exact", head: true }),
-        supabase.from("projects").select("*", { count: "exact", head: true }),
-      ]);
-      setStats({ waitlist: waitlistCount || 0, projects: projectCount || 0, messages: 0 });
-      setLoading(false);
+    const load = async () => {
+      try {
+        const supabase = createBrowserClient();
+        const [{ count }, { data: recent }] = await Promise.all([
+          supabase.from("waitlist").select("*", { count: "exact", head: true }),
+          supabase.from("waitlist").select("name, company_name, district, created_at").order("created_at", { ascending: false }).limit(5),
+        ]);
+        setWaitlistCount(count ?? 0);
+        setRecentEntries(recent ?? []);
+      } catch {
+        setWaitlistCount(0);
+      } finally {
+        setLoading(false);
+      }
     };
-    init();
-  }, [router]);
-
-  const handleLogout = async () => {
-    const supabase = createBrowserClient();
-    await supabase.auth.signOut();
-    router.push("/admin/login");
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
-      </div>
-    );
-  }
+    load();
+  }, []);
 
   const statCards = [
-    { label: "Waitlist Signups", value: stats.waitlist, icon: <Users size={20} />, color: "blue", trend: "+12 this week" },
-    { label: "Active Projects", value: stats.projects, icon: <FolderOpen size={20} />, color: "violet", trend: "3 in progress" },
-    { label: "Conversion Rate", value: "68%", icon: <TrendingUp size={20} />, color: "green", trend: "+5% this month" },
-    { label: "Avg. Delivery", value: "11d", icon: <Clock size={20} />, color: "orange", trend: "Under 2 weeks" },
+    {
+      label: "Waitlist Signups",
+      value: loading ? "—" : (waitlistCount ?? 0).toString(),
+      sub: "Convergeo vendors",
+      icon: Users,
+      color: "blue",
+      href: "/admin/waitlist",
+    },
+    {
+      label: "Active Projects",
+      value: "5",
+      sub: "In portfolio",
+      icon: FolderOpen,
+      color: "violet",
+      href: "/admin/projects",
+    },
+    {
+      label: "Avg. Delivery",
+      value: "11d",
+      sub: "Under 2 weeks",
+      icon: Clock,
+      color: "green",
+      href: null,
+    },
+    {
+      label: "Convergeo Launch",
+      value: "Jul 7",
+      sub: "2026",
+      icon: TrendingUp,
+      color: "amber",
+      href: null,
+    },
   ];
 
+  const colorMap: Record<string, { bg: string; text: string; ring: string }> = {
+    blue:   { bg: "bg-blue-500/10",   text: "text-blue-400",   ring: "ring-blue-500/20" },
+    violet: { bg: "bg-violet-500/10", text: "text-violet-400", ring: "ring-violet-500/20" },
+    green:  { bg: "bg-green-500/10",  text: "text-green-400",  ring: "ring-green-500/20" },
+    amber:  { bg: "bg-amber-500/10",  text: "text-amber-400",  ring: "ring-amber-500/20" },
+  };
+
   return (
-    <div className="min-h-screen flex">
-      {/* Sidebar */}
-      <aside className="w-64 border-r border-white/5 flex flex-col p-6 shrink-0">
-        <div className="flex items-center gap-2.5 mb-10">
-          <div className="relative w-8 h-8 rounded-lg overflow-hidden">
-            <Image src="/Vergeo5.png" alt="Vergeo" fill className="object-cover" />
-          </div>
-          <span className="font-black text-base bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
-            Vergeo Admin
-          </span>
-        </div>
-
-        <nav className="flex-1 space-y-1">
-          {navItems.map(({ href, label, icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-                href === "/admin/dashboard"
-                  ? "bg-blue-600/10 text-blue-400"
-                  : "text-gray-500 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              {icon} {label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="pt-6 border-t border-white/5">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-black">
-              {user?.email?.[0]?.toUpperCase()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-black text-white truncate">{user?.email}</p>
-              <p className="text-[10px] text-gray-500">Administrator</p>
-            </div>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-gray-500 hover:text-red-400 text-sm font-bold transition-colors w-full px-2 py-1.5"
-          >
-            <LogOut size={16} /> Sign out
-          </button>
-        </div>
-      </aside>
-
-      {/* Main */}
-      <main className="flex-1 p-8 overflow-auto">
-        <div className="max-w-5xl">
-          <div className="mb-8">
-            <h1 className="text-2xl font-black text-white mb-1">Dashboard</h1>
-            <p className="text-gray-400 text-sm">Welcome back, {user?.email?.split("@")[0]}.</p>
-          </div>
-
-          {/* Stat cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-            {statCards.map(({ label, value, icon, color, trend }) => (
-              <div key={label} className="bg-white/5 border border-white/10 rounded-2xl p-5">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${
-                  color === "blue" ? "bg-blue-600/10 text-blue-400" :
-                  color === "violet" ? "bg-violet-600/10 text-violet-400" :
-                  color === "green" ? "bg-green-600/10 text-green-400" :
-                  "bg-orange-600/10 text-orange-400"
-                }`}>
-                  {icon}
+    <AdminShell title="Dashboard" subtitle="Welcome back, Kaluba">
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+        {statCards.map(({ label, value, sub, icon: Icon, color, href }) => {
+          const c = colorMap[color];
+          const card = (
+            <div className={`bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-5 transition-all ${href ? "hover:border-white/15 cursor-pointer" : ""}`}>
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-10 h-10 ${c.bg} ${c.text} rounded-xl flex items-center justify-center ring-1 ${c.ring}`}>
+                  <Icon size={18} />
                 </div>
-                <p className="text-2xl font-black text-white mb-0.5">{value}</p>
-                <p className="text-xs font-bold text-gray-400 mb-1">{label}</p>
-                <p className="text-[11px] text-gray-600">{trend}</p>
+                {href && <ArrowUpRight size={14} className="text-gray-700" />}
               </div>
-            ))}
+              <p className={`text-3xl font-black ${c.text} mb-0.5`}>{value}</p>
+              <p className="text-sm font-bold text-gray-300">{label}</p>
+              <p className="text-xs text-gray-600 mt-0.5">{sub}</p>
+            </div>
+          );
+          return href ? <Link key={label} href={href}>{card}</Link> : <div key={label}>{card}</div>;
+        })}
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Recent waitlist */}
+        <div className="lg:col-span-2 bg-[#0d0d14] border border-white/[0.06] rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
+            <h2 className="font-black text-white text-sm">Recent Waitlist Signups</h2>
+            <Link href="/admin/waitlist" className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1">
+              View all <ArrowUpRight size={12} />
+            </Link>
+          </div>
+          {loading ? (
+            <div className="p-6 space-y-3">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-12 bg-white/[0.03] rounded-xl animate-pulse" />
+              ))}
+            </div>
+          ) : recentEntries.length === 0 ? (
+            <div className="p-10 text-center text-gray-600">
+              <Users size={28} className="mx-auto mb-2 opacity-40" />
+              <p className="text-sm">No signups yet</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-white/[0.04]">
+              {recentEntries.map((entry, i) => (
+                <div key={i} className="flex items-center gap-4 px-6 py-3.5 hover:bg-white/[0.02] transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xs font-black shrink-0">
+                    {entry.name?.[0]?.toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-gray-200 truncate">{entry.name}</p>
+                    <p className="text-xs text-gray-500 truncate">{entry.company_name} · {entry.district}</p>
+                  </div>
+                  <p className="text-xs text-gray-600 shrink-0">
+                    {new Date(entry.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Quick actions */}
+        <div className="space-y-4">
+          <div className="bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-5">
+            <h2 className="font-black text-white text-sm mb-4">Quick Actions</h2>
+            <div className="space-y-2">
+              {[
+                { label: "View all waitlist entries", href: "/admin/waitlist", icon: Users, color: "text-blue-400" },
+                { label: "Manage projects", href: "/admin/projects", icon: FolderOpen, color: "text-violet-400" },
+                { label: "Update site settings", href: "/admin/settings", icon: Activity, color: "text-green-400" },
+              ].map(({ label, href, icon: Icon, color }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition-colors group"
+                >
+                  <Icon size={15} className={color} />
+                  <span className="text-sm text-gray-400 group-hover:text-gray-200 transition-colors font-medium">{label}</span>
+                  <ArrowUpRight size={12} className="ml-auto text-gray-700 group-hover:text-gray-500" />
+                </Link>
+              ))}
+            </div>
           </div>
 
-          {/* Quick actions */}
-          <div className="grid md:grid-cols-3 gap-4">
-            <Link
-              href="/admin/waitlist"
-              className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-blue-500/30 transition-all group"
-            >
-              <Users size={24} className="text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="font-black text-white mb-1">View Waitlist</h3>
-              <p className="text-sm text-gray-400">See all Convergeo signups, export CSV</p>
-            </Link>
-
-            <Link
-              href="/admin/projects"
-              className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-violet-500/30 transition-all group"
-            >
-              <FolderOpen size={24} className="text-violet-400 mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="font-black text-white mb-1">Manage Projects</h3>
-              <p className="text-sm text-gray-400">Add, edit, or update project statuses</p>
-            </Link>
-
-            <Link
-              href="/admin/settings"
-              className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-green-500/30 transition-all group"
-            >
-              <Activity size={24} className="text-green-400 mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="font-black text-white mb-1">Site Settings</h3>
-              <p className="text-sm text-gray-400">Availability toggle, contact info, pricing</p>
-            </Link>
+          {/* Status indicators */}
+          <div className="bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-5">
+            <h2 className="font-black text-white text-sm mb-4">System Status</h2>
+            <div className="space-y-3">
+              {[
+                { label: "vergeo.company", status: "online" },
+                { label: "Supabase DB", status: "online" },
+                { label: "Convergeo Launch", status: "upcoming" },
+              ].map(({ label, status }) => (
+                <div key={label} className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400 font-medium">{label}</span>
+                  <span className={`flex items-center gap-1.5 text-xs font-bold ${
+                    status === "online" ? "text-green-400" : "text-amber-400"
+                  }`}>
+                    {status === "online"
+                      ? <CheckCircle size={12} />
+                      : <AlertCircle size={12} />
+                    }
+                    {status}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </AdminShell>
   );
 }

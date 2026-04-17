@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Download, Search, Users } from "lucide-react";
+import { Download, Search, Users, RefreshCw, Mail, Phone } from "lucide-react";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { createBrowserClient } from "@/lib/supabase-admin";
 
 type WaitlistEntry = {
@@ -18,38 +17,41 @@ type WaitlistEntry = {
 };
 
 export default function AdminWaitlistPage() {
-  const router = useRouter();
   const [entries, setEntries] = useState<WaitlistEntry[]>([]);
   const [filtered, setFiltered] = useState<WaitlistEntry[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    const init = async () => {
+  const load = async () => {
+    setLoading(true);
+    setError("");
+    try {
       const supabase = createBrowserClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { router.push("/admin/login"); return; }
-
-      const { data } = await supabase
+      const { data, error: sbErr } = await supabase
         .from("waitlist")
         .select("*")
         .order("created_at", { ascending: false });
-
-      setEntries(data || []);
-      setFiltered(data || []);
+      if (sbErr) throw sbErr;
+      setEntries(data ?? []);
+      setFiltered(data ?? []);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Failed to load waitlist.");
+    } finally {
       setLoading(false);
-    };
-    init();
-  }, [router]);
+    }
+  };
+
+  useEffect(() => { load(); }, []);
 
   useEffect(() => {
     const q = search.toLowerCase();
-    setFiltered(entries.filter((e) =>
-      e.name?.toLowerCase().includes(q) ||
-      e.email?.toLowerCase().includes(q) ||
-      e.company_name?.toLowerCase().includes(q) ||
-      e.district?.toLowerCase().includes(q)
-    ));
+    setFiltered(
+      entries.filter((e) =>
+        [e.name, e.email, e.company_name, e.district, e.industry]
+          .some((v) => v?.toLowerCase().includes(q))
+      )
+    );
   }, [search, entries]);
 
   const exportCSV = () => {
@@ -58,87 +60,146 @@ export default function AdminWaitlistPage() {
       e.name, e.company_name, e.industry, e.email, e.phone, e.whatsapp, e.district,
       new Date(e.created_at).toLocaleDateString(),
     ]);
-    const csv = [headers, ...rows].map((r) => r.map((c) => `"${c || ""}"`).join(",")).join("\n");
+    const csv = [headers, ...rows].map((r) => r.map((c) => `"${c ?? ""}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = `convergeo-waitlist-${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Link href="/admin/dashboard" className="text-gray-500 hover:text-white transition-colors">
-            <ArrowLeft size={20} />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-black text-white">Convergeo Waitlist</h1>
-            <p className="text-gray-400 text-sm">{entries.length} total signups</p>
-          </div>
-          <button
-            onClick={exportCSV}
-            className="ml-auto flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-black text-sm hover:bg-blue-700 transition-colors"
-          >
-            <Download size={16} /> Export CSV
-          </button>
-        </div>
-
-        {/* Search */}
-        <div className="relative mb-6">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+    <AdminShell title="Waitlist" subtitle={`${entries.length} Convergeo signups`}>
+      {/* Actions bar */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="relative flex-1">
+          <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, company, email, or district..."
-            className="w-full bg-white/5 border border-white/10 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-colors"
+            placeholder="Search by name, company, email or district..."
+            className="w-full bg-[#0d0d14] border border-white/[0.08] rounded-xl pl-11 pr-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-blue-500/40 transition-colors"
           />
         </div>
+        <div className="flex gap-2 shrink-0">
+          <button
+            onClick={load}
+            className="flex items-center gap-2 px-4 py-3 bg-[#0d0d14] border border-white/[0.08] rounded-xl text-sm font-bold text-gray-400 hover:text-gray-200 transition-colors"
+          >
+            <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
+          </button>
+          <button
+            onClick={exportCSV}
+            disabled={filtered.length === 0}
+            className="flex items-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white rounded-xl text-sm font-black transition-colors"
+          >
+            <Download size={14} /> Export CSV
+          </button>
+        </div>
+      </div>
 
+      {error && (
+        <div className="mb-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-5 py-4 rounded-xl font-bold">
+          {error}
+        </div>
+      )}
+
+      {/* Table */}
+      <div className="bg-[#0d0d14] border border-white/[0.06] rounded-2xl overflow-hidden">
         {loading ? (
-          <div className="text-center py-24 text-gray-500">Loading...</div>
+          <div className="p-8 space-y-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-14 bg-white/[0.03] rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="py-20 text-center">
+            <Users size={36} className="mx-auto mb-3 text-gray-700" />
+            <p className="text-gray-500 font-bold">{entries.length === 0 ? "No waitlist entries yet" : "No results match your search"}</p>
+            <p className="text-xs text-gray-700 mt-1">
+              {entries.length === 0 ? "Entries will appear here once people sign up at vergeo.company/waitlist" : "Try a different search term"}
+            </p>
+          </div>
         ) : (
-          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-            <div className="overflow-x-auto">
+          <>
+            {/* Desktop table */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="border-b border-white/10">
-                  <tr className="text-left">
-                    {["Name", "Company", "Industry", "Email", "Phone", "District", "Joined"].map((h) => (
-                      <th key={h} className="px-5 py-4 text-xs font-black uppercase tracking-widest text-gray-400">
-                        {h}
-                      </th>
+                <thead>
+                  <tr className="border-b border-white/[0.06]">
+                    {["Applicant", "Industry", "Contact", "District", "Joined"].map((h) => (
+                      <th key={h} className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-[0.15em] text-gray-600">{h}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
-                  {filtered.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="text-center py-16 text-gray-500">
-                        <Users size={32} className="mx-auto mb-3 opacity-30" />
-                        No entries found
+                <tbody className="divide-y divide-white/[0.04]">
+                  {filtered.map((entry) => (
+                    <tr key={entry.id} className="hover:bg-white/[0.02] transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xs font-black shrink-0">
+                            {entry.name?.[0]?.toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-bold text-gray-200">{entry.name}</p>
+                            <p className="text-xs text-gray-500">{entry.company_name}</p>
+                          </div>
+                        </div>
                       </td>
-                    </tr>
-                  ) : filtered.map((entry) => (
-                    <tr key={entry.id} className="hover:bg-white/[0.03] transition-colors">
-                      <td className="px-5 py-4 font-bold text-white">{entry.name}</td>
-                      <td className="px-5 py-4 text-gray-300">{entry.company_name}</td>
-                      <td className="px-5 py-4 text-gray-400">{entry.industry}</td>
-                      <td className="px-5 py-4 text-blue-400">{entry.email}</td>
-                      <td className="px-5 py-4 text-gray-400">{entry.phone}</td>
-                      <td className="px-5 py-4 text-gray-400">{entry.district}</td>
-                      <td className="px-5 py-4 text-gray-500 text-xs">
-                        {new Date(entry.created_at).toLocaleDateString()}
+                      <td className="px-6 py-4">
+                        <span className="text-xs font-bold bg-white/[0.05] text-gray-400 px-2.5 py-1 rounded-lg">
+                          {entry.industry}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <a href={`mailto:${entry.email}`} className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300">
+                            <Mail size={11} /> {entry.email}
+                          </a>
+                          <a href={`tel:${entry.phone}`} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-300">
+                            <Phone size={11} /> {entry.phone}
+                          </a>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-400">{entry.district}</td>
+                      <td className="px-6 py-4 text-xs text-gray-600">
+                        {new Date(entry.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" })}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </div>
+
+            {/* Mobile cards */}
+            <div className="lg:hidden divide-y divide-white/[0.04]">
+              {filtered.map((entry) => (
+                <div key={entry.id} className="p-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-sm font-black">
+                      {entry.name?.[0]?.toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-200 text-sm">{entry.name}</p>
+                      <p className="text-xs text-gray-500">{entry.company_name} · {entry.district}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    <span className="bg-white/[0.05] text-gray-400 px-2 py-1 rounded-lg">{entry.industry}</span>
+                    <span className="text-blue-400">{entry.email}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="px-6 py-3 border-t border-white/[0.06] text-xs text-gray-600 font-bold">
+              Showing {filtered.length} of {entries.length} entries
+            </div>
+          </>
         )}
       </div>
-    </div>
+    </AdminShell>
   );
 }

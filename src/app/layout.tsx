@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { ChatWidget } from "@/components/ui/ChatWidgetWrapper";
-import { PageTransition } from "@/components/layout/PageTransition";
 import { Analytics } from "@vercel/analytics/react";
 import { SITE_CONFIG } from "@/lib/constants";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,11 +32,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": ["Person", "LocalBusiness"],
@@ -52,13 +45,7 @@ export default function RootLayout({
       addressLocality: SITE_CONFIG.location.city,
       addressCountry: SITE_CONFIG.location.countryCode,
     },
-    knowsAbout: [
-      "Web Development",
-      "Workflow Automation",
-      "Full Stack Development",
-      "Next.js",
-      "Automation Builder",
-    ],
+    knowsAbout: ["Web Development", "Workflow Automation", "Full Stack Development", "Next.js", "Automation Builder"],
     image: `${SITE_CONFIG.url}/og-image.png`,
     sameAs: [SITE_CONFIG.socials.github, SITE_CONFIG.socials.twitter],
   };
@@ -73,12 +60,7 @@ export default function RootLayout({
       </head>
       <body className="bg-white dark:bg-[#060608] text-gray-900 dark:text-gray-100 antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Navbar />
-          <PageTransition>
-            <main>{children}</main>
-          </PageTransition>
-          <Footer />
-          <ChatWidget />
+          <SiteChrome>{children}</SiteChrome>
         </ThemeProvider>
         <Analytics />
       </body>
