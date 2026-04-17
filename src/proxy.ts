@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get("host") || "";
 
@@ -9,15 +9,13 @@ export async function middleware(request: NextRequest) {
     if (pathname === "/" || pathname === "") {
       return NextResponse.redirect(new URL("/admin/dashboard", request.url));
     }
-    // Already on an /admin path — let it through
     if (pathname.startsWith("/admin")) {
       return NextResponse.next();
     }
-    // Any other path on admin subdomain → redirect to admin dashboard
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
-  // Protect /admin routes on the main domain (except /admin/login)
+  // Protect /admin routes on main domain (except /admin/login)
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
     const accessToken = request.cookies.get("sb-access-token")?.value;
     const refreshToken = request.cookies.get("sb-refresh-token")?.value;
@@ -32,7 +30,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all paths for subdomain routing
     "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
   ],
 };
