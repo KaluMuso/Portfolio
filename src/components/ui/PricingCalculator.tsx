@@ -24,7 +24,7 @@ const WEB_FEATURES: Feature[] = [
   { id: "automation", label: "Workflow Automation", price: 150, description: "N8N flows + integrations" },
   { id: "blog", label: "Blog / CMS", price: 100, description: "Sanity or Notion-powered blog" },
   { id: "auth", label: "Auth System", price: 90, description: "Login, roles, Supabase Auth" },
-  { id: "payments", label: "Payment Integration", price: 110, description: "Stripe or local gateway" },
+  { id: "payments", label: "Payment Integration", price: 110, description: "Lenco and DPO or local gateway" },
   { id: "seo", label: "SEO Package", price: 60, description: "Schema, sitemap, meta optimization" },
   { id: "admin", label: "Admin Dashboard", price: 200, description: "Custom CMS / management panel" },
 ];

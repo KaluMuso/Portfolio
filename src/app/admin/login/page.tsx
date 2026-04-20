@@ -1,12 +1,15 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
-import { createBrowserClient } from "@/lib/supabase-admin";
+import { createBrowserClient } from "@/lib/supabase/client";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/admin/dashboard";
+
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw]     = useState(false);
@@ -24,12 +27,13 @@ export default function AdminLoginPage() {
       setLoading(false);
       return;
     }
-    router.push("/admin/dashboard");
+    // router.refresh() hydrates the server-side session; then navigate.
+    router.refresh();
+    router.push(redirectTo);
   };
 
   return (
     <div className="min-h-screen bg-[#060608] flex items-center justify-center px-4">
-      {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-blue-600/5 rounded-full blur-3xl" />
       </div>
@@ -48,13 +52,11 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        {/* Card */}
         <div className="bg-[#0d0d14] border border-white/[0.08] rounded-3xl p-8 shadow-2xl">
           <h1 className="text-2xl font-black text-white mb-1">Welcome back</h1>
           <p className="text-gray-500 text-sm mb-8">Sign in to the control panel</p>
 
           <form onSubmit={handleLogin} className="space-y-4">
-            {/* Email */}
             <div>
               <label className="block text-xs font-black uppercase tracking-[0.15em] text-gray-500 mb-2">
                 Email Address
@@ -73,7 +75,6 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-xs font-black uppercase tracking-[0.15em] text-gray-500 mb-2">
                 Password

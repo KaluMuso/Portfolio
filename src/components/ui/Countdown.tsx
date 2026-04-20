@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const TARGET_DATE = new Date("2026-07-12T00:00:00").getTime();
+const TARGET_DATE = new Date("2026-07-07T00:00:00").getTime();
 
 export function Countdown() {
   const [timeLeft, setTimeLeft] = useState<{

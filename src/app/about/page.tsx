@@ -41,12 +41,12 @@ const values = [
   "Frontend UI/UX Design",
   "Branding & Identity",
   "SEO & Performance",
-  "AI Agent Consultation",
+  "AI consultation, workshops & training",
 ];
 
 const stats = [
   { value: "2+", label: "Years building" },
-  { value: "10+", label: "Projects shipped" },
+  { value: "30+", label: "Projects shipped" },
   { value: "2 wks", label: "Max delivery" },
   { value: "200+", label: "Waitlist signups" },
 ];
@@ -116,7 +116,7 @@ export default function AboutPage() {
                   <Linkedin size={18} />
                 </a>
                 <a
-                  href={SITE_CONFIG.socials.whatsapp}
+                  href={`${SITE_CONFIG.socials.whatsapp}?text=Hi+Kaluba%2C+I+found+you+on+vergeo.company+and+I+would+like+to+discuss+a+project.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-11 h-11 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 transition-all border border-gray-200 dark:border-white/10"

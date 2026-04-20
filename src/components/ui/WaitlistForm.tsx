@@ -13,6 +13,7 @@ type FormData = {
   whatsapp: string;
   sameAsPhone: boolean;
   district: string;
+  website: string; // honeypot — real users never fill this
 };
 
 const INDUSTRIES = [
@@ -30,18 +31,11 @@ const INDUSTRIES = [
   "Other",
 ];
 
-const DISTRICTS = [
-  "Lusaka", "Kitwe", "Ndola", "Livingstone", "Kabwe", "Chipata",
-  "Solwezi", "Kasama", "Mansa", "Mongu", "Chingola", "Mufulira",
-  "Kafue", "Luanshya", "Mazabuka", "Other",
-];
-
 export function WaitlistForm() {
   const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm<FormData>({
     defaultValues: { sameAsPhone: false },
   });
   const [error, setError] = useState("");
-  const [copied, setCopied] = useState(false);
   const router = useRouter();
 
   const sameAsPhone = watch("sameAsPhone");
@@ -50,8 +44,6 @@ export function WaitlistForm() {
   useEffect(() => {
     if (sameAsPhone && phone) {
       setValue("whatsapp", phone);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
     }
   }, [sameAsPhone, phone, setValue]);
 
@@ -66,6 +58,7 @@ export function WaitlistForm() {
         phone: data.phone,
         whatsapp: data.sameAsPhone ? data.phone : data.whatsapp,
         district: data.district,
+        website: data.website, // honeypot — pass through; server discards if filled
       };
 
       const response = await fetch("/api/waitlist", {
@@ -87,6 +80,19 @@ export function WaitlistForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 text-left">
+      {/* Honeypot — hidden from real users, bots fill it. aria-hidden keeps screen readers away. */}
+      <div className="absolute left-[-9999px] w-0 h-0 overflow-hidden" aria-hidden="true">
+        <label>
+          Website (leave blank)
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            {...register("website")}
+          />
+        </label>
+      </div>
+
       {/* Name */}
       <div>
         <label className={labelClasses}>Full Name *</label>
@@ -187,13 +193,12 @@ export function WaitlistForm() {
       {/* District */}
       <div>
         <label className={labelClasses}>District / Location *</label>
-        <select
+        <input
           {...register("district", { required: "District is required" })}
+          type="text"
           className={inputClasses}
-        >
-          <option value="">Select your district...</option>
-          {DISTRICTS.map((d) => <option key={d} value={d}>{d}</option>)}
-        </select>
+          placeholder="Enter your district or location"
+        />
         {errors.district && <p className="text-red-500 text-xs mt-1.5 font-bold">{errors.district.message}</p>}
       </div>
 

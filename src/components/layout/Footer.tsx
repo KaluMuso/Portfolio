@@ -66,7 +66,7 @@ export function Footer() {
                 <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-emerald-500/10 transition-colors">
                   <MessageSquare size={14} />
                 </div>
-                +267 761 359 005
+                {SITE_CONFIG.whatsappDisplay}
               </a>
               <div className="flex items-center gap-3 text-sm text-gray-400 font-medium">
                 <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center">

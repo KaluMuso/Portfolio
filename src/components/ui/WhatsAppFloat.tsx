@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { MessageCircle, X } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
 
 export function WhatsAppFloat() {

@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, Download, Sparkles, ArrowDown } from "lucide-react";
 
 const stats = [
-  { value: "15+", label: "Projects Shipped" },
-  { value: "10+", label: "Happy Clients" },
+  { value: "30+", label: "Projects Shipped" },
+  { value: "20+", label: "Happy Clients" },
   { value: "2wk", label: "Avg Delivery" },
   { value: "100%", label: "On-Time Rate" },
 ];

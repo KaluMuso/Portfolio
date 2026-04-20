@@ -25,7 +25,9 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => { setOpen(false); }, [pathname]);
+  // Note: closing the mobile menu on route change is handled per-link
+  // via onClick={() => setOpen(false)} below — avoids a setState-in-effect
+  // cascade re-render flagged by react-hooks/set-state-in-effect.
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] px-4 md:px-6 pt-4 transition-all duration-300">
@@ -116,6 +118,7 @@ export function Navbar() {
                 <Link
                   key={href}
                   href={href}
+                  onClick={() => setOpen(false)}
                   className={`text-base font-black px-4 py-3 rounded-2xl transition-all ${
                     active
                       ? "text-blue-600 dark:text-blue-400 bg-blue-600/8"
@@ -129,6 +132,7 @@ export function Navbar() {
             <div className="mt-2 pt-4 border-t border-gray-100 dark:border-white/5">
               <Link
                 href="/contact"
+                onClick={() => setOpen(false)}
                 className="block bg-blue-600 text-white text-center py-3.5 rounded-2xl font-black shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-colors"
               >
                 Start a project

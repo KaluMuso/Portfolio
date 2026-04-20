@@ -1,67 +1,41 @@
-"use client";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Users, FolderOpen, TrendingUp, Clock, ArrowUpRight, Activity, CheckCircle, AlertCircle } from "lucide-react";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { createBrowserClient } from "@/lib/supabase-admin";
+import { requireAdminUser } from "@/lib/auth";
+import { createAdminClient } from "@/lib/supabase/server";
 
-export default function AdminDashboard() {
-  const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
-  const [recentEntries, setRecentEntries] = useState<{ name: string; company_name: string; district: string; created_at: string }[]>([]);
-  const [loading, setLoading] = useState(true);
+type RecentEntry = {
+  name: string;
+  company_name: string;
+  district: string;
+  created_at: string;
+};
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const supabase = createBrowserClient();
-        const [{ count }, { data: recent }] = await Promise.all([
-          supabase.from("waitlist").select("*", { count: "exact", head: true }),
-          supabase.from("waitlist").select("name, company_name, district, created_at").order("created_at", { ascending: false }).limit(5),
-        ]);
-        setWaitlistCount(count ?? 0);
-        setRecentEntries(recent ?? []);
-      } catch {
-        setWaitlistCount(0);
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
+async function loadDashboard() {
+  const supabase = createAdminClient();
+  const [{ count }, { data: recent }] = await Promise.all([
+    supabase.from("waitlist").select("*", { count: "exact", head: true }),
+    supabase
+      .from("waitlist")
+      .select("name, company_name, district, created_at")
+      .order("created_at", { ascending: false })
+      .limit(5),
+  ]);
+  return {
+    waitlistCount: count ?? 0,
+    recentEntries: (recent as RecentEntry[] | null) ?? [],
+  };
+}
+
+export default async function AdminDashboard() {
+  const user = await requireAdminUser();
+  const { waitlistCount, recentEntries } = await loadDashboard();
 
   const statCards = [
-    {
-      label: "Waitlist Signups",
-      value: loading ? "—" : (waitlistCount ?? 0).toString(),
-      sub: "Convergeo vendors",
-      icon: Users,
-      color: "blue",
-      href: "/admin/waitlist",
-    },
-    {
-      label: "Active Projects",
-      value: "5",
-      sub: "In portfolio",
-      icon: FolderOpen,
-      color: "violet",
-      href: "/admin/projects",
-    },
-    {
-      label: "Avg. Delivery",
-      value: "11d",
-      sub: "Under 2 weeks",
-      icon: Clock,
-      color: "green",
-      href: null,
-    },
-    {
-      label: "Convergeo Launch",
-      value: "Jul 7",
-      sub: "2026",
-      icon: TrendingUp,
-      color: "amber",
-      href: null,
-    },
+    { label: "Waitlist Signups", value: waitlistCount.toString(), sub: "Convergeo vendors", icon: Users, color: "blue", href: "/admin/waitlist" },
+    { label: "Active Projects",  value: "5",                       sub: "In portfolio",      icon: FolderOpen, color: "violet", href: "/admin/projects" },
+    { label: "Avg. Delivery",    value: "11d",                     sub: "Under 2 weeks",     icon: Clock,     color: "green",  href: null },
+    { label: "Convergeo Launch", value: "Jul 7",                   sub: "2026",              icon: TrendingUp,color: "amber",  href: null },
   ];
 
   const colorMap: Record<string, { bg: string; text: string; ring: string }> = {
@@ -72,7 +46,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <AdminShell title="Dashboard" subtitle="Welcome back, Kaluba">
+    <AdminShell title="Dashboard" subtitle="Welcome back, Kaluba" email={user.email ?? ""}>
       {/* Stat cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
         {statCards.map(({ label, value, sub, icon: Icon, color, href }) => {
@@ -103,13 +77,7 @@ export default function AdminDashboard() {
               View all <ArrowUpRight size={12} />
             </Link>
           </div>
-          {loading ? (
-            <div className="p-6 space-y-3">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-12 bg-white/[0.03] rounded-xl animate-pulse" />
-              ))}
-            </div>
-          ) : recentEntries.length === 0 ? (
+          {recentEntries.length === 0 ? (
             <div className="p-10 text-center text-gray-600">
               <Users size={28} className="mx-auto mb-2 opacity-40" />
               <p className="text-sm">No signups yet</p>

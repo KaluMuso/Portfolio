@@ -1,6 +1,6 @@
 export function TrustBar() {
   const tools = [
-    "Next.js", "Supabase", "N8N", "Stripe", "PostgreSQL",
+    "Next.js", "Supabase", "N8N", "Lenco and DPO", "PostgreSQL",
     "React", "TypeScript", "Tailwind CSS", "Vercel", "OpenAI",
     "WhatsApp API", "Framer Motion",
   ];

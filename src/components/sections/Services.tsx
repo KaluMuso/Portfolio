@@ -17,7 +17,7 @@ const services = [
     glowHover: "hover:shadow-blue-500/10",
     numColor: "text-blue-600/20 dark:text-blue-400/15",
     tagBg: "bg-blue-500/6 border-blue-500/15 text-blue-600 dark:text-blue-400",
-    tags: ["Next.js", "Stripe", "Supabase"],
+    tags: ["Next.js", "Lenco and DPO", "Supabase"],
   },
   {
     num: "02",

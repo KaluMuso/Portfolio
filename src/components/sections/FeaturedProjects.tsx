@@ -18,8 +18,8 @@ const comingSoon = [
   {
     title: "SmartInvoice Pro",
     description:
-      "Automated invoicing & payment reminder system with Stripe integration. Zero manual follow-up, faster collections.",
-    tags: ["Stripe", "Automation", "SaaS"],
+      "Automated invoicing & payment reminder system with Lenco and DPO integration. Zero manual follow-up, faster collections.",
+    tags: ["Lenco and DPO", "Automation", "SaaS"],
     accent: "amber",
     eta: "Q3 2025",
   },

@@ -1,8 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Loader2, ExternalLink } from "lucide-react";
+import { MessageCircle, X, Send, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { SITE_CONFIG } from "@/lib/constants";
 
 type Message = {
   role: "user" | "assistant";
@@ -19,7 +20,10 @@ const SUGGESTED = [
   "View all projects",
 ];
 
-const WHATSAPP_URL = "https://wa.me/260761359005?text=Hi%20Kaluba%2C%20I%20was%20chatting%20with%20Speedo%20on%20vergeo.company%20and%20would%20like%20to%20continue%20our%20conversation%20with%20you.";
+const WHATSAPP_HANDOFF = encodeURIComponent(
+  "Hi Kaluba, I was chatting with Speedo on vergeo.company and would like to continue our conversation with you."
+);
+const WHATSAPP_URL = `${SITE_CONFIG.socials.whatsapp}?text=${WHATSAPP_HANDOFF}`;
 
 const UNSATISFIED_THRESHOLD = 4;
 
@@ -98,8 +102,14 @@ export function ChatWidget() {
     if (leadStage === "collecting_email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (emailRegex.test(text.trim())) {
-        setLeadEmail(text.trim());
+        const emailOk = text.trim();
+        setLeadEmail(emailOk);
         setLeadStage("qualified");
+        void fetch("/api/chat/lead", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId, name: leadName, email: emailOk }),
+        }).catch(() => {});
         setTimeout(() => {
           setMessages((prev) => [
             ...prev,

@@ -6,28 +6,41 @@ import { Zap, ArrowRight, Send, CheckCircle2 } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
 
 export function WaitlistCTA() {
-  const [name, setName]     = useState("");
-  const [email, setEmail]   = useState("");
-  const [msg, setMsg]       = useState("");
-  const [sent, setSent]     = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [msg, setMsg] = useState("");
+  const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email) return;
+    setFormError(null);
     setLoading(true);
-    // Use the existing contact/waitlist API or just navigate
     try {
-      await fetch("/api/waitlist", {
+      const res = await fetch("/api/instant-connect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message: msg }),
+        body: JSON.stringify({ name, email, phone, message: msg }),
       });
-    } catch (_) {
-      // graceful fail — show success regardless
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) {
+        setFormError(
+          data.error ??
+            "Something went wrong. Try again or use the WhatsApp button."
+        );
+        setLoading(false);
+        return;
+      }
+      setSent(true);
+    } catch {
+      setFormError(
+        "Network error. Check your connection or message us on WhatsApp."
+      );
     }
     setLoading(false);
-    setSent(true);
   }
 
   return (
@@ -135,6 +148,15 @@ export function WaitlistCTA() {
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 font-medium focus:outline-none focus:border-blue-500/50 transition-colors"
                   />
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder="WhatsApp / phone (optional, E.164 e.g. +263…)"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 font-medium focus:outline-none focus:border-blue-500/50 transition-colors"
+                  />
                   <textarea
                     placeholder="Tell us what you need (optional)"
                     rows={3}
@@ -142,6 +164,11 @@ export function WaitlistCTA() {
                     onChange={(e) => setMsg(e.target.value)}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 font-medium focus:outline-none focus:border-blue-500/50 transition-colors resize-none"
                   />
+                  {formError ? (
+                    <p className="text-sm text-rose-300/90 font-medium" role="alert">
+                      {formError}
+                    </p>
+                  ) : null}
                   <button
                     type="submit"
                     disabled={loading}
