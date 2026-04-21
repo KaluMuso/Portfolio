@@ -7,7 +7,22 @@ const KIMI_MODEL = process.env.KIMI_MODEL ?? "moonshot-v1-8k";
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL ?? "openai/gpt-4o-mini";
 const MAX_MESSAGE_CHARS = 4000;
-const MAX_HISTORY = 8;
+const MAX_HISTORY = 20; // Raised from 8 — first 2-4 turns are lead capture
+const MAX_LEAD_FIELD = 80; // Clamp user-supplied context to avoid prompt injection
+
+/**
+ * Sanitise a user-supplied field before dropping it into the system prompt.
+ * Strips control chars and newlines so an attacker can't inject a fake
+ * "SYSTEM:" block. Also hard-limits length.
+ */
+function sanitiseLeadField(v: unknown): string {
+  if (typeof v !== "string") return "";
+  return v
+    .replace(/[\x00-\x1F\x7F]/g, " ") // control chars incl. newlines
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, MAX_LEAD_FIELD);
+}
 
 const SYSTEM_PROMPT = `You are Speedo, the friendly and knowledgeable AI assistant for Vergeo Group — a full-stack web development and automation agency based in Lusaka, Zambia.
 
@@ -157,8 +172,10 @@ export async function POST(req: Request) {
     });
   }
 
-  const contextNote = leadName
-    ? `[Context: Speaking with ${leadName}${leadEmail ? ` (${leadEmail})` : ""}]`
+  const safeName = sanitiseLeadField(leadName);
+  const safeEmail = sanitiseLeadField(leadEmail);
+  const contextNote = safeName
+    ? `[Context: Speaking with ${safeName}${safeEmail ? ` (${safeEmail})` : ""}]`
     : "";
 
   const chatHistory: ChatMsg[] = (history ?? [])

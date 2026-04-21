@@ -65,8 +65,21 @@ export function ChatWidget() {
     send(text);
   };
 
+  /**
+   * Render an assistant message safely.
+   * - Escape HTML first so any LLM-generated <script>, onerror=, javascript:
+   *   etc. is neutralised (XSS defence).
+   * - Then re-introduce the only formatting we actually want: **bold** and
+   *   line breaks.
+   */
   const renderContent = (content: string) => {
-    return content
+    const escaped = content
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+    return escaped
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\n/g, "<br />");
   };
@@ -82,7 +95,15 @@ export function ChatWidget() {
 
     // Lead qualification: collect name first
     if (leadStage === "collecting_name") {
-      const name = text.trim().split(" ")[0];
+      // Strip filler like "my name is", "i'm", "this is" then take 1-2 words.
+      // Falls back to the full string if nothing matches, so single-word inputs
+      // like "John" still work.
+      const cleaned = text
+        .trim()
+        .replace(/^(my name is|i'?m|this is|it'?s|call me)\s+/i, "")
+        .replace(/[.,!?]+$/g, "")
+        .trim();
+      const name = cleaned.split(/\s+/).slice(0, 2).join(" ") || "there";
       setLeadName(name);
       setLeadStage("collecting_email");
       setTimeout(() => {
