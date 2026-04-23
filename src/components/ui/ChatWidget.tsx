@@ -10,7 +10,14 @@ type Message = {
   content: string;
 };
 
-type LeadStage = "collecting_name" | "collecting_email" | "qualified" | "unqualified";
+/**
+ * Lead-capture state machine:
+ *   open       → user can chat freely; lead card appears after N exchanges
+ *   prompted   → lead card visible; user is filling form OR can skip
+ *   qualified  → name+email captured; chat continues normally
+ *   skipped    → user opted out; we never bother them again
+ */
+type LeadStage = "open" | "prompted" | "qualified" | "skipped";
 
 const SUGGESTED = [
   "What services do you offer?",
@@ -25,7 +32,10 @@ const WHATSAPP_HANDOFF = encodeURIComponent(
 );
 const WHATSAPP_URL = `${SITE_CONFIG.socials.whatsapp}?text=${WHATSAPP_HANDOFF}`;
 
-const UNSATISFIED_THRESHOLD = 4;
+const PROMPT_LEAD_AT = 3;     // after N user messages, ask for lead
+const UNSATISFIED_THRESHOLD = 5;
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ChatWidget() {
   const router = useRouter();
@@ -33,13 +43,14 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi! I'm **Speedo**, Vergeo Group's AI assistant 👋\n\nI can help with pricing, services, project timelines and more. What's your name so I can assist you better?",
+      content:
+        "Hi! I'm **Speedo**, Vergeo Group's AI assistant 👋\n\nAsk me about pricing, services, timelines, or anything else — or pick a question below to get started.",
     },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [sessionId] = useState(() => crypto.randomUUID());
-  const [leadStage, setLeadStage] = useState<LeadStage>("collecting_name");
+  const [leadStage, setLeadStage] = useState<LeadStage>("open");
   const [leadName, setLeadName] = useState("");
   const [leadEmail, setLeadEmail] = useState("");
   const [exchangeCount, setExchangeCount] = useState(0);
@@ -48,8 +59,16 @@ export function ChatWidget() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, open]);
+  }, [messages, open, leadStage]);
 
+  // Surface the lead-capture card softly after the user has engaged a bit.
+  useEffect(() => {
+    if (leadStage === "open" && exchangeCount >= PROMPT_LEAD_AT) {
+      setLeadStage("prompted");
+    }
+  }, [exchangeCount, leadStage]);
+
+  // After a few back-and-forths, surface a WhatsApp escape hatch.
   useEffect(() => {
     if (exchangeCount >= UNSATISFIED_THRESHOLD && !showWhatsApp) {
       setShowWhatsApp(true);
@@ -67,10 +86,8 @@ export function ChatWidget() {
 
   /**
    * Render an assistant message safely.
-   * - Escape HTML first so any LLM-generated <script>, onerror=, javascript:
-   *   etc. is neutralised (XSS defence).
-   * - Then re-introduce the only formatting we actually want: **bold** and
-   *   line breaks.
+   * Escape HTML first (XSS defence — the LLM output is untrusted), then
+   * re-introduce only the formatting we want: **bold** and line breaks.
    */
   const renderContent = (content: string) => {
     const escaped = content
@@ -84,80 +101,7 @@ export function ChatWidget() {
       .replace(/\n/g, "<br />");
   };
 
-  const send = async (text: string) => {
-    if (!text.trim() || loading) return;
-
-    const userMsg: Message = { role: "user", content: text };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-    setLoading(true);
-    setExchangeCount((c) => c + 1);
-
-    // Lead qualification: collect name first
-    if (leadStage === "collecting_name") {
-      // Strip filler like "my name is", "i'm", "this is" then take 1-2 words.
-      // Falls back to the full string if nothing matches, so single-word inputs
-      // like "John" still work.
-      const cleaned = text
-        .trim()
-        .replace(/^(my name is|i'?m|this is|it'?s|call me)\s+/i, "")
-        .replace(/[.,!?]+$/g, "")
-        .trim();
-      const name = cleaned.split(/\s+/).slice(0, 2).join(" ") || "there";
-      setLeadName(name);
-      setLeadStage("collecting_email");
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: `Nice to meet you, **${name}**! 🎉\n\nTo make sure I can follow up with tailored info, what's your email address?`,
-          },
-        ]);
-        setLoading(false);
-      }, 600);
-      return;
-    }
-
-    // Collect email
-    if (leadStage === "collecting_email") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (emailRegex.test(text.trim())) {
-        const emailOk = text.trim();
-        setLeadEmail(emailOk);
-        setLeadStage("qualified");
-        void fetch("/api/chat/lead", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId, name: leadName, email: emailOk }),
-        }).catch(() => {});
-        setTimeout(() => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              role: "assistant",
-              content: `Perfect! I've noted your details, **${leadName}**. 📋\n\nKaluba will receive a notification about your inquiry. Now, how can I help you today?`,
-            },
-          ]);
-          setLoading(false);
-        }, 600);
-        return;
-      } else {
-        setTimeout(() => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              role: "assistant",
-              content: "That doesn't look like a valid email. Could you double-check and try again?",
-            },
-          ]);
-          setLoading(false);
-        }, 400);
-        return;
-      }
-    }
-
-    // Normal AI response
+  const askAI = async (text: string, history: Message[]) => {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -167,7 +111,7 @@ export function ChatWidget() {
           sessionId,
           leadName,
           leadEmail,
-          history: messages,
+          history,
         }),
       });
       const data = await res.json();
@@ -175,17 +119,63 @@ export function ChatWidget() {
         ...prev,
         {
           role: "assistant",
-          content: data.reply || "Sorry, I couldn't process that. Please try again or switch to WhatsApp.",
+          content:
+            data.reply ||
+            "Sorry, I couldn't process that. Try WhatsApp for a faster response.",
         },
       ]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Connection issue — please try WhatsApp for a faster response." },
+        {
+          role: "assistant",
+          content:
+            "Connection issue — please try WhatsApp for a faster response.",
+        },
       ]);
     } finally {
       setLoading(false);
     }
+  };
+
+  const send = async (text: string) => {
+    if (!text.trim() || loading) return;
+
+    const userMsg: Message = { role: "user", content: text };
+    const historySnapshot = messages; // closure-safe before setState
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setLoading(true);
+    setExchangeCount((c) => c + 1);
+    await askAI(text, historySnapshot);
+  };
+
+  const submitLead = async (name: string, email: string) => {
+    const cleanName =
+      name.trim().split(/\s+/).slice(0, 3).join(" ").slice(0, 60) || "Friend";
+    const cleanEmail = email.trim().toLowerCase();
+    if (!EMAIL_REGEX.test(cleanEmail)) return false;
+
+    setLeadName(cleanName);
+    setLeadEmail(cleanEmail);
+    setLeadStage("qualified");
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        content: `Thanks **${cleanName}** — I've passed your details to Kaluba so he can follow up. What else can I help with?`,
+      },
+    ]);
+    void fetch("/api/chat/lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId, name: cleanName, email: cleanEmail }),
+    }).catch(() => {});
+    return true;
+  };
+
+  const skipLead = () => {
+    setLeadStage("skipped");
   };
 
   return (
@@ -255,7 +245,7 @@ export function ChatWidget() {
           ))}
 
           {/* Suggested prompts — only on first message */}
-          {messages.length === 1 && (
+          {messages.length === 1 && !loading && (
             <div className="space-y-1.5 pt-1 pl-9">
               {SUGGESTED.map((s) => (
                 <button
@@ -267,6 +257,11 @@ export function ChatWidget() {
                 </button>
               ))}
             </div>
+          )}
+
+          {/* Inline lead capture — appears once, after engagement */}
+          {leadStage === "prompted" && !loading && (
+            <LeadCapture onSubmit={submitLead} onSkip={skipLead} />
           )}
 
           {/* WhatsApp handoff banner */}
@@ -309,7 +304,7 @@ export function ChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send(input)}
-              placeholder={leadStage === "collecting_name" ? "Type your name..." : leadStage === "collecting_email" ? "Type your email..." : "Ask Speedo anything..."}
+              placeholder="Ask Speedo anything..."
               className="flex-1 text-sm outline-none bg-transparent text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 font-medium"
             />
             <button
@@ -329,5 +324,71 @@ export function ChatWidget() {
         </div>
       </div>
     </>
+  );
+}
+
+/**
+ * Inline lead-capture card. Replaces the old multi-turn name-then-email flow.
+ * One card, two fields, "Skip for now" link — never blocks the chat.
+ */
+function LeadCapture({
+  onSubmit,
+  onSkip,
+}: {
+  onSubmit: (name: string, email: string) => Promise<boolean>;
+  onSkip: () => void;
+}) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const submit = async () => {
+    if (!name.trim() || !email.trim()) {
+      setError("Both fields are required.");
+      return;
+    }
+    setSubmitting(true);
+    setError("");
+    const ok = await onSubmit(name, email);
+    setSubmitting(false);
+    if (!ok) setError("That email doesn't look right.");
+  };
+
+  return (
+    <div className="ml-9 mr-1 bg-blue-50 dark:bg-blue-900/15 border border-blue-200 dark:border-blue-900/40 rounded-2xl p-4 space-y-3">
+      <p className="text-xs font-black text-blue-900 dark:text-blue-300">
+        Want Kaluba to follow up personally?
+      </p>
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Your name"
+        className="w-full bg-white dark:bg-black/20 border border-blue-200/50 dark:border-blue-900/30 rounded-xl px-3 py-2 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-400"
+      />
+      <input
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        type="email"
+        placeholder="Email address"
+        className="w-full bg-white dark:bg-black/20 border border-blue-200/50 dark:border-blue-900/30 rounded-xl px-3 py-2 text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-blue-400"
+      />
+      {error && <p className="text-[11px] text-red-500 font-bold">{error}</p>}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={submit}
+          disabled={submitting}
+          className="flex-1 bg-blue-600 disabled:opacity-50 text-white text-xs font-black px-3 py-2 rounded-xl hover:bg-blue-700 transition-colors"
+        >
+          {submitting ? "Sending..." : "Send my details"}
+        </button>
+        <button
+          onClick={onSkip}
+          className="text-[11px] font-bold text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 px-2 py-2"
+        >
+          Skip
+        </button>
+      </div>
+    </div>
   );
 }

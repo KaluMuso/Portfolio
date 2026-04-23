@@ -47,7 +47,7 @@ export function ProjectsBoard() {
 
       {/* Filters */}
       <div className="flex flex-wrap gap-4 mb-6">
-        <div className="flex gap-1.5 p-1 bg-[#0d0d14] border border-white/[0.06] rounded-xl">
+        <div className="flex gap-1.5 p-1 bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-xl">
           {ALL_CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -62,7 +62,7 @@ export function ProjectsBoard() {
             </button>
           ))}
         </div>
-        <div className="flex gap-1.5 p-1 bg-[#0d0d14] border border-white/[0.06] rounded-xl">
+        <div className="flex gap-1.5 p-1 bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-xl">
           {ALL_STATUSES.map((s) => (
             <button
               key={s}
@@ -87,7 +87,7 @@ export function ProjectsBoard() {
           return (
             <div
               key={project.slug}
-              className="bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-5 hover:border-white/15 transition-all group"
+              className="bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-5 hover:border-white/15 transition-all group"
             >
               {/* Header */}
               <div className="flex items-start justify-between gap-2 mb-3">
@@ -103,7 +103,7 @@ export function ProjectsBoard() {
                       </span>
                     )}
                   </div>
-                  <h3 className="font-black text-gray-200 text-base leading-tight">{project.title}</h3>
+                  <h3 className="font-black text-gray-800 dark:text-gray-200 text-base leading-tight">{project.title}</h3>
                 </div>
                 {project.liveUrl && (
                   <a

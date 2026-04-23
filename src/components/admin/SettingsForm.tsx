@@ -32,16 +32,16 @@ export function SettingsForm({ initial, save }: { initial: SiteSettings; save: S
     }
   };
 
-  const inputClasses = "w-full bg-[#060608] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-700 focus:outline-none focus:border-blue-500/40 transition-colors font-medium";
-  const labelClasses = "block text-xs font-black uppercase tracking-[0.12em] text-gray-500 mb-2";
+  const inputClasses = "w-full bg-gray-50 dark:bg-[#060608] border border-gray-200 dark:border-white/[0.08] rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-700 focus:outline-none focus:border-blue-500/40 transition-colors font-medium";
+  const labelClasses = "block text-xs font-black uppercase tracking-[0.12em] text-gray-600 dark:text-gray-500 mb-2";
 
   return (
     <div className="max-w-2xl space-y-6">
       {/* Availability */}
-      <div className="bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-6">
+      <div className="bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-6">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h3 className="font-black text-white mb-1">Project Availability</h3>
+            <h3 className="font-black text-gray-900 dark:text-white mb-1">Project Availability</h3>
             <p className="text-xs text-gray-500">Controls the availability pill displayed on the website</p>
           </div>
           <button
@@ -63,8 +63,8 @@ export function SettingsForm({ initial, save }: { initial: SiteSettings; save: S
       </div>
 
       {/* Contact Info */}
-      <div className="bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-6 space-y-5">
-        <h3 className="font-black text-white">Contact Information</h3>
+      <div className="bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-6 space-y-5">
+        <h3 className="font-black text-gray-900 dark:text-white">Contact Information</h3>
 
         {[
           { key: "whatsapp_number", label: "WhatsApp Number", icon: Phone, placeholder: "+260 761 359 005", type: "tel" },
@@ -89,8 +89,8 @@ export function SettingsForm({ initial, save }: { initial: SiteSettings; save: S
       </div>
 
       {/* Site URL */}
-      <div className="bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-6">
-        <h3 className="font-black text-white mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-6">
+        <h3 className="font-black text-gray-900 dark:text-white mb-4 flex items-center gap-2">
           <Globe size={16} className="text-blue-400" /> Live Site
         </h3>
         <a

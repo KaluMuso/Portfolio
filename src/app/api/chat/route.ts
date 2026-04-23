@@ -166,9 +166,11 @@ export async function POST(req: Request) {
   const provider = resolveProvider();
 
   if (!provider) {
+    // Logged so the operator (you) can see this in Vercel logs.
+    console.error("chat: no LLM provider configured. Set OPENROUTER_API_KEY or KIMI_API_KEY.");
     return NextResponse.json({
       reply:
-        "I'm currently in setup mode. Please WhatsApp Kaluba directly at +260 761 359 005 for immediate assistance.",
+        "Speedo is offline right now. Please WhatsApp Kaluba directly at +260 761 359 005 — he'll reply within 2 hours.",
     });
   }
 

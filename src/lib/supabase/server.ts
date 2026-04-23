@@ -37,11 +37,18 @@ export async function createServerSupabaseClient() {
  * Service-role admin client. NEVER import from a Client Component or
  * any module that ships to the browser. Bypasses RLS — use only inside
  * Route Handlers / Server Actions for trusted operations.
+ *
+ * Throws a loud, actionable error if env vars are missing, so admin
+ * pages render a helpful error rather than a silent Supabase failure.
  */
 export function createAdminClient() {
-  return createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    throw new Error(
+      "Supabase admin client requires SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY. " +
+      "Set both in Vercel → Project Settings → Environment Variables, then redeploy."
+    );
+  }
+  return createClient(url, key, { auth: { persistSession: false } });
 }

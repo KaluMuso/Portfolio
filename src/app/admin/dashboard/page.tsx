@@ -52,16 +52,16 @@ export default async function AdminDashboard() {
         {statCards.map(({ label, value, sub, icon: Icon, color, href }) => {
           const c = colorMap[color];
           const card = (
-            <div className={`bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-5 transition-all ${href ? "hover:border-white/15 cursor-pointer" : ""}`}>
+            <div className={`bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-5 transition-all ${href ? "hover:border-gray-300 dark:hover:border-white/15 cursor-pointer" : ""}`}>
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-10 h-10 ${c.bg} ${c.text} rounded-xl flex items-center justify-center ring-1 ${c.ring}`}>
                   <Icon size={18} />
                 </div>
-                {href && <ArrowUpRight size={14} className="text-gray-700" />}
+                {href && <ArrowUpRight size={14} className="text-gray-400 dark:text-gray-700" />}
               </div>
               <p className={`text-3xl font-black ${c.text} mb-0.5`}>{value}</p>
-              <p className="text-sm font-bold text-gray-300">{label}</p>
-              <p className="text-xs text-gray-600 mt-0.5">{sub}</p>
+              <p className="text-sm font-bold text-gray-700 dark:text-gray-300">{label}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-600 mt-0.5">{sub}</p>
             </div>
           );
           return href ? <Link key={label} href={href}>{card}</Link> : <div key={label}>{card}</div>;
@@ -70,30 +70,30 @@ export default async function AdminDashboard() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent waitlist */}
-        <div className="lg:col-span-2 bg-[#0d0d14] border border-white/[0.06] rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-            <h2 className="font-black text-white text-sm">Recent Waitlist Signups</h2>
-            <Link href="/admin/waitlist" className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1">
+        <div className="lg:col-span-2 bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/[0.06]">
+            <h2 className="font-black text-gray-900 dark:text-white text-sm">Recent Waitlist Signups</h2>
+            <Link href="/admin/waitlist" className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1">
               View all <ArrowUpRight size={12} />
             </Link>
           </div>
           {recentEntries.length === 0 ? (
-            <div className="p-10 text-center text-gray-600">
+            <div className="p-10 text-center text-gray-500 dark:text-gray-600">
               <Users size={28} className="mx-auto mb-2 opacity-40" />
               <p className="text-sm">No signups yet</p>
             </div>
           ) : (
-            <div className="divide-y divide-white/[0.04]">
+            <div className="divide-y divide-gray-100 dark:divide-white/[0.04]">
               {recentEntries.map((entry, i) => (
-                <div key={i} className="flex items-center gap-4 px-6 py-3.5 hover:bg-white/[0.02] transition-colors">
+                <div key={i} className="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white text-xs font-black shrink-0">
                     {entry.name?.[0]?.toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-gray-200 truncate">{entry.name}</p>
+                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">{entry.name}</p>
                     <p className="text-xs text-gray-500 truncate">{entry.company_name} · {entry.district}</p>
                   </div>
-                  <p className="text-xs text-gray-600 shrink-0">
+                  <p className="text-xs text-gray-500 dark:text-gray-600 shrink-0">
                     {new Date(entry.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                   </p>
                 </div>
@@ -104,8 +104,8 @@ export default async function AdminDashboard() {
 
         {/* Quick actions */}
         <div className="space-y-4">
-          <div className="bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-5">
-            <h2 className="font-black text-white text-sm mb-4">Quick Actions</h2>
+          <div className="bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-5">
+            <h2 className="font-black text-gray-900 dark:text-white text-sm mb-4">Quick Actions</h2>
             <div className="space-y-2">
               {[
                 { label: "View all waitlist entries", href: "/admin/waitlist", icon: Users, color: "text-blue-400" },
@@ -115,19 +115,19 @@ export default async function AdminDashboard() {
                 <Link
                   key={href}
                   href={href}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition-colors group"
+                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors group"
                 >
                   <Icon size={15} className={color} />
-                  <span className="text-sm text-gray-400 group-hover:text-gray-200 transition-colors font-medium">{label}</span>
-                  <ArrowUpRight size={12} className="ml-auto text-gray-700 group-hover:text-gray-500" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors font-medium">{label}</span>
+                  <ArrowUpRight size={12} className="ml-auto text-gray-400 dark:text-gray-700 group-hover:text-gray-600 dark:group-hover:text-gray-500" />
                 </Link>
               ))}
             </div>
           </div>
 
           {/* Status indicators */}
-          <div className="bg-[#0d0d14] border border-white/[0.06] rounded-2xl p-5">
-            <h2 className="font-black text-white text-sm mb-4">System Status</h2>
+          <div className="bg-white dark:bg-[#0d0d14] border border-gray-200 dark:border-white/[0.06] rounded-2xl p-5">
+            <h2 className="font-black text-gray-900 dark:text-white text-sm mb-4">System Status</h2>
             <div className="space-y-3">
               {[
                 { label: "vergeo.company", status: "online" },
@@ -135,9 +135,9 @@ export default async function AdminDashboard() {
                 { label: "Convergeo Launch", status: "upcoming" },
               ].map(({ label, status }) => (
                 <div key={label} className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400 font-medium">{label}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">{label}</span>
                   <span className={`flex items-center gap-1.5 text-xs font-bold ${
-                    status === "online" ? "text-green-400" : "text-amber-400"
+                    status === "online" ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"
                   }`}>
                     {status === "online"
                       ? <CheckCircle size={12} />

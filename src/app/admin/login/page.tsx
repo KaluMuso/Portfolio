@@ -27,7 +27,7 @@ function AdminLoginForm() {
       setLoading(false);
       return;
     }
-    // router.refresh() hydrates the server-side session; then navigate.
+    // refresh() rehydrates the server-side session before navigating.
     router.refresh();
     router.push(redirectTo);
   };
@@ -131,9 +131,13 @@ function AdminLoginForm() {
   );
 }
 
+/**
+ * useSearchParams() requires a Suspense boundary in Next 15+. Without it the
+ * page bails out of static rendering and prerender fails at build time.
+ */
 export default function AdminLoginPage() {
   return (
-    <Suspense>
+    <Suspense fallback={<div className="min-h-screen bg-[#060608]" />}>
       <AdminLoginForm />
     </Suspense>
   );

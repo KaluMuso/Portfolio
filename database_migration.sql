@@ -58,6 +58,12 @@ create table if not exists public.site_settings (
 insert into public.site_settings (id) values (1)
   on conflict (id) do nothing;
 
+-- Patch pre-existing tables: ensure updated_at exists (older versions of this
+-- table didn't have it, which makes the touch_site_settings trigger fail with
+-- 'record "new" has no field "updated_at"').
+alter table public.site_settings
+  add column if not exists updated_at timestamptz not null default now();
+
 create or replace function public.touch_site_settings()
 returns trigger language plpgsql as $$
 begin
@@ -122,12 +128,79 @@ create policy "authenticated can update site_settings"
   using (true)
   with check (true);
 
+-- ──────────────────────────────────────────────── chat_leads + chat_messages ──
+-- These tables back the "Vergeo Chat Webhook Pipeline" in n8n. The portfolio
+-- fires fire-and-forget webhooks to n8n for every chat turn and every
+-- qualified lead; n8n writes a row here via service_role.
+
+create table if not exists public.chat_leads (
+  id            uuid primary key default gen_random_uuid(),
+  session_id    text,
+  name          text,
+  email         text not null,
+  source        text,              -- e.g. "speedo-chat"
+  site_url      text,
+  occurred_at   timestamptz not null default now(),
+  created_at    timestamptz not null default now()
+);
+create unique index if not exists chat_leads_session_email_key
+  on public.chat_leads (session_id, lower(email));
+create index if not exists chat_leads_occurred_at_idx
+  on public.chat_leads (occurred_at desc);
+
+create table if not exists public.chat_messages (
+  id               uuid primary key default gen_random_uuid(),
+  session_id       text,
+  lead_name        text,
+  lead_email       text,
+  user_message     text,
+  assistant_reply  text,
+  provider         text,            -- "openrouter" | "kimi"
+  occurred_at      timestamptz not null default now(),
+  created_at       timestamptz not null default now()
+);
+create index if not exists chat_messages_session_idx
+  on public.chat_messages (session_id, occurred_at);
+create index if not exists chat_messages_occurred_at_idx
+  on public.chat_messages (occurred_at desc);
+
+-- Lock these tables down the same way as waitlist: only service_role writes
+-- (n8n uses it), authenticated admin reads them, anon touches nothing.
+alter table public.chat_leads    enable row level security;
+alter table public.chat_messages enable row level security;
+
+do $$
+declare r record;
+begin
+  for r in
+    select schemaname, tablename, policyname
+    from pg_policies
+    where schemaname = 'public'
+      and tablename in ('chat_leads', 'chat_messages')
+  loop
+    execute format('drop policy if exists %I on %I.%I',
+                   r.policyname, r.schemaname, r.tablename);
+  end loop;
+end $$;
+
+create policy "authenticated can read chat_leads"
+  on public.chat_leads for select
+  to authenticated
+  using (true);
+
+create policy "authenticated can read chat_messages"
+  on public.chat_messages for select
+  to authenticated
+  using (true);
+-- No anon policies by design — anon has zero access.
+
 -- ─────────────────────────────────────────────────── grants (RLS-aware) ──
 grant usage  on schema public to anon, authenticated;
 grant insert on public.waitlist to anon;
 grant select on public.waitlist to authenticated;
 grant select on public.site_settings to anon, authenticated;
 grant update on public.site_settings to authenticated;
+grant select on public.chat_leads, public.chat_messages to authenticated;
 
 -- ────────────────────────────────────────────────────── verification ──
 -- After the script runs, execute these queries (separately) to confirm.
